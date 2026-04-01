@@ -36,7 +36,7 @@ const Navbar = () => {
           <span className="gradient-primary text-primary-foreground w-9 h-9 rounded-xl flex items-center justify-center text-lg">
             <BookOpen className="w-5 h-5" />
           </span>
-          <span className="text-gradient-primary">EduQuest</span>
+          <span className="text-gradient-primary">RyuZuno</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-1">

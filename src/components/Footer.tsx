@@ -38,7 +38,7 @@ const Footer = () => (
         </div>
       </div>
       <div className="border-t border-background/10 mt-8 pt-8 text-center text-sm opacity-60">
-        © 2026 EduQuest. All rights reserved. Made with ❤️
+        © 2026 RyuZuno. All rights reserved. Made with ❤️
       </div>
     </div>
   </footer>
