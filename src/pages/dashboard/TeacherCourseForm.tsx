@@ -276,7 +276,7 @@ const TeacherCourseForm = () => {
             </div>
             <div className="space-y-2">
               <Label>Deskripsi</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Deskripsi kursus..." rows={4} />
+              <TipTapEditor content={description} onChange={setDescription} placeholder="Deskripsi kursus..." />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
