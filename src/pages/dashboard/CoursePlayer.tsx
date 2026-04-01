@@ -26,6 +26,11 @@ interface Lesson {
   completed: boolean;
 }
 
+const toEmbedUrl = (url: string) => {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+};
+
 const CoursePlayer = () => {
   const { courseId } = useParams();
   const { user } = useAuth();
@@ -208,7 +213,7 @@ const CoursePlayer = () => {
                 {activeLesson.video_url ? (
                   <div className="aspect-video bg-black rounded-2xl overflow-hidden">
                     <iframe
-                      src={activeLesson.video_url}
+                      src={toEmbedUrl(activeLesson.video_url)}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
