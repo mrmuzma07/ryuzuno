@@ -18,6 +18,10 @@ import StudentCourses from "./pages/dashboard/StudentCourses";
 import StudentLearningPaths from "./pages/dashboard/StudentLearningPaths";
 import CoursePlayer from "./pages/dashboard/CoursePlayer";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
+import TeacherCourses from "./pages/dashboard/TeacherCourses";
+import TeacherCourseForm from "./pages/dashboard/TeacherCourseForm";
+import TeacherStudents from "./pages/dashboard/TeacherStudents";
+import TeacherReviews from "./pages/dashboard/TeacherReviews";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ModeratorDashboard from "./pages/dashboard/ModeratorDashboard";
 import NotFound from "./pages/NotFound";
@@ -46,6 +50,11 @@ const App = () => (
             <Route path="/dashboard/course-player/:courseId" element={<CoursePlayer />} />
             <Route path="/dashboard/badges" element={<StudentBadges />} />
             <Route path="/teacher" element={<TeacherDashboard />} />
+            <Route path="/teacher/courses" element={<TeacherCourses />} />
+            <Route path="/teacher/create" element={<TeacherCourseForm />} />
+            <Route path="/teacher/edit/:courseId" element={<TeacherCourseForm />} />
+            <Route path="/teacher/students" element={<TeacherStudents />} />
+            <Route path="/teacher/reviews" element={<TeacherReviews />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/moderator" element={<ModeratorDashboard />} />
             <Route path="*" element={<NotFound />} />
