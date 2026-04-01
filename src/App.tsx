@@ -17,6 +17,8 @@ import StudentBadges from "./pages/dashboard/StudentBadges";
 import StudentCourses from "./pages/dashboard/StudentCourses";
 import StudentLearningPaths from "./pages/dashboard/StudentLearningPaths";
 import CoursePlayer from "./pages/dashboard/CoursePlayer";
+import StudentLeaderboard from "./pages/dashboard/StudentLeaderboard";
+import StudentProfile from "./pages/dashboard/StudentProfile";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import TeacherCourses from "./pages/dashboard/TeacherCourses";
 import TeacherCourseForm from "./pages/dashboard/TeacherCourseForm";
