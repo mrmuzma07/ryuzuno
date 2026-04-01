@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, BookOpen, Search, LogOut, User } from "lucide-react";
+import { Menu, X, BookOpen, Search, LogOut, User, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/hooks/useCart";
+import { Badge } from "@/components/ui/badge";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
