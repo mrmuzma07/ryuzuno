@@ -64,6 +64,7 @@ const TeacherCourseForm = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const [sections, setSections] = useState<SectionForm[]>([]);
+  const [learningObjectives, setLearningObjectives] = useState<string[]>([]);
 
   const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -102,6 +103,8 @@ const TeacherCourseForm = () => {
       setPrice(String(course.price));
       setCategoryId(course.category_id || "");
       setThumbnailUrl(course.thumbnail_url || "");
+      const objectives = (course as any).learning_objectives;
+      setLearningObjectives(Array.isArray(objectives) ? objectives : []);
     }
 
     const { data: secs } = await supabase
@@ -210,6 +213,7 @@ const TeacherCourseForm = () => {
         title: title.trim(), description: description.trim() || null, level,
         price: Number(price) || 0, category_id: categoryId || null,
         thumbnail_url: thumbnailUrl.trim() || null, teacher_id: user.id,
+        learning_objectives: learningObjectives.filter(o => o.trim()) as any,
       };
 
       if (isEdit) {
@@ -411,6 +415,34 @@ const TeacherCourseForm = () => {
                   <span className="text-xs text-muted-foreground">atau</span>
                   <Input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="Paste URL gambar..." className="flex-1" />
                 </div>
+              </div>
+            </div>
+
+            {/* Learning Objectives */}
+            <div className="space-y-2">
+              <Label>Yang Akan Dipelajari</Label>
+              <p className="text-xs text-muted-foreground">Daftar hal yang akan dipelajari siswa di kursus ini</p>
+              <div className="space-y-2">
+                {learningObjectives.map((obj, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input
+                      value={obj}
+                      onChange={(e) => {
+                        const updated = [...learningObjectives];
+                        updated[i] = e.target.value;
+                        setLearningObjectives(updated);
+                      }}
+                      placeholder={`Poin ${i + 1}`}
+                      className="flex-1"
+                    />
+                    <Button type="button" size="icon" variant="ghost" className="text-destructive shrink-0" onClick={() => setLearningObjectives(learningObjectives.filter((_, idx) => idx !== i))}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button type="button" size="sm" variant="outline" onClick={() => setLearningObjectives([...learningObjectives, ""])} className="gap-1 text-xs">
+                  <Plus className="w-3 h-3" /> Tambah Poin
+                </Button>
               </div>
             </div>
           </CardContent>

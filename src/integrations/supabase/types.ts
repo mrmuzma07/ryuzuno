@@ -220,6 +220,53 @@ export type Database = {
           },
         ]
       }
+      coupons: {
+        Row: {
+          code: string
+          course_id: string | null
+          created_at: string
+          discount_amount: number
+          discount_percent: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          used_count: number
+        }
+        Insert: {
+          code: string
+          course_id?: string | null
+          created_at?: string
+          discount_amount?: number
+          discount_percent?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          course_id?: string | null
+          created_at?: string
+          discount_amount?: number
+          discount_percent?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          used_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_reviews: {
         Row: {
           course_id: string
@@ -262,6 +309,7 @@ export type Database = {
           description: string | null
           id: string
           is_featured: boolean
+          learning_objectives: Json | null
           level: Database["public"]["Enums"]["difficulty_level"]
           price: number
           rating: number | null
@@ -278,6 +326,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_featured?: boolean
+          learning_objectives?: Json | null
           level?: Database["public"]["Enums"]["difficulty_level"]
           price?: number
           rating?: number | null
@@ -294,6 +343,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_featured?: boolean
+          learning_objectives?: Json | null
           level?: Database["public"]["Enums"]["difficulty_level"]
           price?: number
           rating?: number | null
