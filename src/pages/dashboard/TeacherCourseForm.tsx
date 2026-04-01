@@ -64,6 +64,7 @@ const TeacherCourseForm = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const [sections, setSections] = useState<SectionForm[]>([]);
+  const [learningObjectives, setLearningObjectives] = useState<string[]>([]);
 
   const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

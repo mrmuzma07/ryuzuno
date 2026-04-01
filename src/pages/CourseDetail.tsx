@@ -5,8 +5,9 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils-format";
-import { Star, Users, Clock, BookOpen, Play, CheckCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { Star, Users, Clock, BookOpen, Play, CheckCircle, ArrowLeft, Loader2, Tag, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -17,6 +18,9 @@ const CourseDetail = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [enrolling, setEnrolling] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course-detail", id],
@@ -27,7 +31,6 @@ const CourseDetail = () => {
         .eq("id", id!)
         .single();
       if (!course) return null;
-      // Fetch teacher name separately since there's no FK
       const { data: teacherProfile } = await supabase
         .from("profiles")
         .select("full_name")
@@ -63,6 +66,42 @@ const CourseDetail = () => {
     },
     enabled: !!user && !!id,
   });
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim() || !id) return;
+    setCheckingCoupon(true);
+    try {
+      const { data: coupon } = await supabase
+        .from("coupons")
+        .select("*")
+        .eq("code", couponCode.trim().toUpperCase())
+        .eq("course_id", id)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (!coupon) {
+        toast.error("Kupon tidak ditemukan atau tidak berlaku untuk kursus ini");
+        setAppliedCoupon(null);
+        return;
+      }
+      if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+        toast.error("Kupon sudah kedaluwarsa");
+        setAppliedCoupon(null);
+        return;
+      }
+      if (coupon.max_uses && coupon.used_count >= coupon.max_uses) {
+        toast.error("Kupon sudah habis digunakan");
+        setAppliedCoupon(null);
+        return;
+      }
+      setAppliedCoupon(coupon);
+      toast.success("Kupon berhasil diterapkan! 🎉");
+    } catch {
+      toast.error("Gagal memvalidasi kupon");
+    } finally {
+      setCheckingCoupon(false);
+    }
+  };
 
   const handleEnroll = async () => {
     if (!user) { toast.error("Silakan login terlebih dahulu!"); navigate("/login"); return; }
@@ -113,6 +152,21 @@ const CourseDetail = () => {
   const totalMinutes = sections.reduce((sum: number, s: any) => sum + (s.lessons || []).reduce((ls: number, l: any) => ls + (l.duration_minutes || 0), 0), 0);
   const teacherName = course?.teacher_name || "Instructor";
 
+  const originalPrice = Number(course.price);
+  let discountedPrice = originalPrice;
+  let discountPercent = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_percent > 0) {
+      discountPercent = appliedCoupon.discount_percent;
+      discountedPrice = originalPrice * (1 - discountPercent / 100);
+    } else if (Number(appliedCoupon.discount_amount) > 0) {
+      discountedPrice = Math.max(0, originalPrice - Number(appliedCoupon.discount_amount));
+      discountPercent = originalPrice > 0 ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100) : 0;
+    }
+  }
+
+  const learningObjectives: string[] = Array.isArray(course.learning_objectives) ? course.learning_objectives as string[] : [];
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -141,6 +195,7 @@ const CourseDetail = () => {
               <p className="text-sm text-background/60">Dibuat oleh <strong className="text-background">{teacherName}</strong></p>
             </div>
 
+            {/* Sidebar Card */}
             <Card className="p-6 space-y-4 self-start bg-card text-card-foreground">
               {course.thumbnail_url ? (
                 <img src={course.thumbnail_url} alt={course.title} className="w-full aspect-video object-cover rounded-xl" />
@@ -149,7 +204,22 @@ const CourseDetail = () => {
                   <Play className="w-12 h-12 text-primary" />
                 </div>
               )}
-              <p className="font-heading text-3xl font-bold text-primary">{formatPrice(Number(course.price))}</p>
+
+              {/* Price with discount */}
+              <div className="space-y-1">
+                <div className="flex items-baseline gap-2">
+                  <p className="font-heading text-3xl font-bold text-primary">
+                    {formatPrice(discountedPrice)}
+                  </p>
+                  {appliedCoupon && (
+                    <>
+                      <p className="text-lg text-muted-foreground line-through">{formatPrice(originalPrice)}</p>
+                      <Badge className="bg-fun-green text-white border-0 text-xs">diskon {discountPercent}%</Badge>
+                    </>
+                  )}
+                </div>
+              </div>
+
               {isEnrolled ? (
                 <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12" onClick={() => navigate(`/dashboard/course-player/${id}`)}>
                   Lanjutkan Belajar 📖
@@ -159,17 +229,70 @@ const CourseDetail = () => {
                   {enrolling ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Mendaftar...</> : "Enroll Sekarang"}
                 </Button>
               )}
+
               <div className="text-xs text-muted-foreground space-y-1">
                 <p>✅ Akses selamanya</p>
                 <p>✅ Sertifikat kelulusan</p>
                 <p>✅ Badge reward</p>
               </div>
+
+              {/* Coupon Section */}
+              {!isEnrolled && (
+                <div className="border-t pt-4 space-y-3">
+                  <p className="text-sm font-medium flex items-center gap-1.5">
+                    <Tag className="w-4 h-4" /> Gunakan Kupon
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      placeholder="Masukkan Kupon"
+                      className="flex-1 uppercase text-sm"
+                      disabled={!!appliedCoupon}
+                    />
+                    {appliedCoupon ? (
+                      <Button size="sm" variant="outline" onClick={() => { setAppliedCoupon(null); setCouponCode(""); }} className="text-xs shrink-0">
+                        Hapus
+                      </Button>
+                    ) : (
+                      <Button size="sm" onClick={handleApplyCoupon} disabled={checkingCoupon || !couponCode.trim()} className="text-xs shrink-0">
+                        {checkingCoupon ? <Loader2 className="w-3 h-3 animate-spin" /> : "Terapkan"}
+                      </Button>
+                    )}
+                  </div>
+                  {appliedCoupon && (
+                    <p className="text-xs text-fun-green flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" /> Kupon "{appliedCoupon.code}" diterapkan!
+                    </p>
+                  )}
+                </div>
+              )}
             </Card>
           </div>
         </div>
       </section>
 
-      <section className="py-12">
+      {/* Learning Objectives */}
+      {learningObjectives.length > 0 && (
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <Card className="max-w-3xl p-6 md:p-8">
+              <h2 className="font-heading text-xl md:text-2xl font-bold mb-6">Yang akan Anda pelajari 🎯</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                {learningObjectives.map((obj, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <span className="text-sm">{obj}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </section>
+      )}
+
+      {/* Curriculum */}
+      <section className={learningObjectives.length > 0 ? "pb-12" : "py-12"}>
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <h2 className="font-heading text-2xl font-bold mb-6">Curriculum 📚</h2>
