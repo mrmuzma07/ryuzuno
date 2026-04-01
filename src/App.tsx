@@ -23,6 +23,11 @@ import TeacherCourseForm from "./pages/dashboard/TeacherCourseForm";
 import TeacherStudents from "./pages/dashboard/TeacherStudents";
 import TeacherReviews from "./pages/dashboard/TeacherReviews";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import AdminUsers from "./pages/dashboard/AdminUsers";
+import AdminCourses from "./pages/dashboard/AdminCourses";
+import AdminCategories from "./pages/dashboard/AdminCategories";
+import AdminBadges from "./pages/dashboard/AdminBadges";
+import AdminLearningPaths from "./pages/dashboard/AdminLearningPaths";
 import ModeratorDashboard from "./pages/dashboard/ModeratorDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -56,6 +61,11 @@ const App = () => (
             <Route path="/teacher/students" element={<TeacherStudents />} />
             <Route path="/teacher/reviews" element={<TeacherReviews />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/courses" element={<AdminCourses />} />
+            <Route path="/admin/categories" element={<AdminCategories />} />
+            <Route path="/admin/badges" element={<AdminBadges />} />
+            <Route path="/admin/paths" element={<AdminLearningPaths />} />
             <Route path="/moderator" element={<ModeratorDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
