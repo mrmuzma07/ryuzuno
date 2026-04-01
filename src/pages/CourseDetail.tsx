@@ -22,6 +22,7 @@ const CourseDetail = () => {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [checkingCoupon, setCheckingCoupon] = useState(false);
+  const { addToCart } = useCart();
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course-detail", id],
