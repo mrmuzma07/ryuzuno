@@ -242,10 +242,16 @@ const CoursePlayer = () => {
                   </div>
 
                   {activeLesson.content && (
-                    <div className="prose prose-sm max-w-none text-foreground/80">
-                      <p>{activeLesson.content}</p>
-                    </div>
+                    <div className="prose prose-sm max-w-none text-foreground/80" dangerouslySetInnerHTML={{ __html: activeLesson.content }} />
                   )}
+
+                  {/* Lesson Features */}
+                  <div className="space-y-6 pt-2">
+                    <LessonAttachments lessonId={activeLesson.id} />
+                    <LessonQuiz lessonId={activeLesson.id} />
+                    <LessonCodingExercise lessonId={activeLesson.id} />
+                    <LessonAssignment lessonId={activeLesson.id} />
+                  </div>
 
                   {!completedLessons.has(activeLesson.id) ? (
                     <Button onClick={completeLesson} className="rounded-xl gap-2 w-full md:w-auto">
