@@ -307,8 +307,34 @@ const TeacherCourseForm = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Thumbnail URL</Label>
-              <Input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="https://..." />
+              <Label>Thumbnail / Course Cover</Label>
+              <div className="flex flex-col gap-3">
+                {thumbnailUrl && (
+                  <div className="relative w-full max-w-sm">
+                    <img src={thumbnailUrl} alt="Course thumbnail" className="w-full aspect-video object-cover rounded-xl border" />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="destructive"
+                      className="absolute top-2 right-2 w-7 h-7"
+                      onClick={() => setThumbnailUrl("")}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                )}
+                <div className="flex gap-2 items-center">
+                  <label className="cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} disabled={uploadingThumbnail} />
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-muted hover:bg-muted/80 text-sm font-medium transition-colors">
+                      {uploadingThumbnail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      Upload Gambar
+                    </div>
+                  </label>
+                  <span className="text-xs text-muted-foreground">atau</span>
+                  <Input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="Paste URL gambar..." className="flex-1" />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
