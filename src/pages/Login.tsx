@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { BookOpen, Mail, Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,7 +19,26 @@ const Login = () => {
     setLoading(true);
     try {
       await signIn(email, password);
-      navigate("/dashboard");
+      // Fetch roles to determine redirect
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: rolesData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id);
+        const userRoles = rolesData?.map((r: any) => r.role) || [];
+        if (userRoles.includes("admin")) {
+          navigate("/admin");
+        } else if (userRoles.includes("moderator")) {
+          navigate("/moderator");
+        } else if (userRoles.includes("teacher")) {
+          navigate("/teacher");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       const { toast } = await import("sonner");
       toast.error(error.message || "Login gagal");
