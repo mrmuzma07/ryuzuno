@@ -62,6 +62,18 @@ const Navbar = () => {
           <Button variant="ghost" size="icon" className="rounded-xl">
             <Search className="w-4 h-4" />
           </Button>
+          {user && (
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="icon" className="rounded-xl">
+                <ShoppingCart className="w-4 h-4" />
+              </Button>
+              {itemCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] gradient-primary border-0 text-primary-foreground">
+                  {itemCount}
+                </Badge>
+              )}
+            </Link>
+          )}
           {user ? (
             <>
               <Link to={getDashboardLink()}>

@@ -227,9 +227,17 @@ const CourseDetail = () => {
                   Lanjutkan Belajar 📖
                 </Button>
               ) : (
-                <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12" onClick={handleEnroll} disabled={enrolling}>
-                  {enrolling ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Mendaftar...</> : "Enroll Sekarang"}
-                </Button>
+                <div className="space-y-2">
+                  <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12" onClick={() => {
+                    if (!user) { toast.error("Silakan login terlebih dahulu!"); navigate("/login"); return; }
+                    addToCart.mutate({ courseId: id!, couponId: appliedCoupon?.id });
+                  }} disabled={addToCart.isPending}>
+                    {addToCart.isPending ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Menambahkan...</> : "🛒 Tambah ke Keranjang"}
+                  </Button>
+                  <Button variant="outline" className="w-full rounded-xl font-bold text-base h-12" onClick={handleEnroll} disabled={enrolling}>
+                    {enrolling ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Mendaftar...</> : "Enroll Gratis"}
+                  </Button>
+                </div>
               )}
 
               <div className="text-xs text-muted-foreground space-y-1">
