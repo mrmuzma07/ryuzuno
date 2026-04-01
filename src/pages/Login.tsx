@@ -18,7 +18,26 @@ const Login = () => {
     setLoading(true);
     try {
       await signIn(email, password);
-      navigate("/dashboard");
+      // Fetch roles to determine redirect
+      const { data: { user } } = await (await import("@/integrations/supabase/client")).supabase.auth.getUser();
+      if (user) {
+        const { data: rolesData } = await (await import("@/integrations/supabase/client")).supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id);
+        const userRoles = rolesData?.map((r: any) => r.role) || [];
+        if (userRoles.includes("admin")) {
+          navigate("/admin");
+        } else if (userRoles.includes("moderator")) {
+          navigate("/moderator");
+        } else if (userRoles.includes("teacher")) {
+          navigate("/teacher");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       const { toast } = await import("sonner");
       toast.error(error.message || "Login gagal");
