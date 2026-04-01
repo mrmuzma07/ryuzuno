@@ -26,6 +26,11 @@ interface Lesson {
   completed: boolean;
 }
 
+const toEmbedUrl = (url: string) => {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+};
+
 const CoursePlayer = () => {
   const { courseId } = useParams();
   const { user } = useAuth();
