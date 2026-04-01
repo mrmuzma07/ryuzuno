@@ -49,7 +49,7 @@ const ModeratorQueue = () => {
       // Update course status
       const { error: courseError } = await supabase
         .from("courses")
-        .update({ status })
+        .update({ status: status as "published" | "rejected" })
         .eq("id", courseId);
       if (courseError) throw courseError;
 
