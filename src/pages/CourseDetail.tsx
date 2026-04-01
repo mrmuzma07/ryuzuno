@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils-format";
 import { Star, Users, Clock, BookOpen, Play, CheckCircle, ArrowLeft, Loader2, Tag, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +22,7 @@ const CourseDetail = () => {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [checkingCoupon, setCheckingCoupon] = useState(false);
+  const { addToCart } = useCart();
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["course-detail", id],
@@ -225,9 +227,17 @@ const CourseDetail = () => {
                   Lanjutkan Belajar 📖
                 </Button>
               ) : (
-                <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12" onClick={handleEnroll} disabled={enrolling}>
-                  {enrolling ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Mendaftar...</> : "Enroll Sekarang"}
-                </Button>
+                <div className="space-y-2">
+                  <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12" onClick={() => {
+                    if (!user) { toast.error("Silakan login terlebih dahulu!"); navigate("/login"); return; }
+                    addToCart.mutate({ courseId: id!, couponId: appliedCoupon?.id });
+                  }} disabled={addToCart.isPending}>
+                    {addToCart.isPending ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Menambahkan...</> : "🛒 Tambah ke Keranjang"}
+                  </Button>
+                  <Button variant="outline" className="w-full rounded-xl font-bold text-base h-12" onClick={handleEnroll} disabled={enrolling}>
+                    {enrolling ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Mendaftar...</> : "Enroll Gratis"}
+                  </Button>
+                </div>
               )}
 
               <div className="text-xs text-muted-foreground space-y-1">
