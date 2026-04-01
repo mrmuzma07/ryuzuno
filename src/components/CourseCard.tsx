@@ -38,7 +38,7 @@ const badgeColors: Record<string, string> = {
   "New": "bg-fun-green text-white",
 };
 
-const CourseCard = ({ id, title, instructor, price, rating, reviewCount, studentCount, total_students, level, category, category_name, duration, lessonCount, badges = [] }: CourseCardProps) => {
+const CourseCard = ({ id, title, instructor, price, rating, reviewCount, studentCount, total_students, level, category, category_name, duration, lessonCount, badges = [], thumbnail_url }: CourseCardProps) => {
   const students = studentCount || total_students || 0;
   const cat = category || category_name || "";
   
@@ -46,9 +46,13 @@ const CourseCard = ({ id, title, instructor, price, rating, reviewCount, student
     <Link to={`/course/${id}`}>
       <Card className="group overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-2 border-transparent hover:border-primary/20">
         <div className="aspect-video bg-gradient-to-br from-primary/20 via-fun-blue/20 to-fun-pink/20 relative overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <BookOpen className="w-12 h-12 text-primary/40 group-hover:scale-110 transition-transform" />
-          </div>
+          {thumbnail_url ? (
+            <img src={thumbnail_url} alt={title} className="absolute inset-0 w-full h-full object-cover" />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <BookOpen className="w-12 h-12 text-primary/40 group-hover:scale-110 transition-transform" />
+            </div>
+          )}
           {badges.length > 0 && (
             <div className="absolute top-3 left-3 flex gap-1.5">
               {badges.map((b) => (

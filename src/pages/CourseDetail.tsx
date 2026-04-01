@@ -142,9 +142,13 @@ const CourseDetail = () => {
             </div>
 
             <Card className="p-6 space-y-4 self-start bg-card text-card-foreground">
-              <div className="aspect-video bg-gradient-to-br from-primary/20 to-fun-blue/20 rounded-xl flex items-center justify-center">
-                <Play className="w-12 h-12 text-primary" />
-              </div>
+              {course.thumbnail_url ? (
+                <img src={course.thumbnail_url} alt={course.title} className="w-full aspect-video object-cover rounded-xl" />
+              ) : (
+                <div className="aspect-video bg-gradient-to-br from-primary/20 to-fun-blue/20 rounded-xl flex items-center justify-center">
+                  <Play className="w-12 h-12 text-primary" />
+                </div>
+              )}
               <p className="font-heading text-3xl font-bold text-primary">{formatPrice(Number(course.price))}</p>
               {isEnrolled ? (
                 <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12" onClick={() => navigate(`/dashboard/course-player/${id}`)}>
