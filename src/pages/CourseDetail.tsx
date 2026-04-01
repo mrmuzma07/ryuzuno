@@ -21,12 +21,19 @@ const CourseDetail = () => {
   const { data: course, isLoading } = useQuery({
     queryKey: ["course-detail", id],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data: course } = await supabase
         .from("courses")
-        .select("*, categories(name), profiles:teacher_id(full_name)")
+        .select("*, categories(name)")
         .eq("id", id!)
         .single();
-      return data;
+      if (!course) return null;
+      // Fetch teacher name separately since there's no FK
+      const { data: teacherProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", course.teacher_id)
+        .single();
+      return { ...course, teacher_name: teacherProfile?.full_name || "Instructor" };
     },
     enabled: !!id,
   });
