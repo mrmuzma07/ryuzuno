@@ -213,6 +213,7 @@ const TeacherCourseForm = () => {
         title: title.trim(), description: description.trim() || null, level,
         price: Number(price) || 0, category_id: categoryId || null,
         thumbnail_url: thumbnailUrl.trim() || null, teacher_id: user.id,
+        learning_objectives: learningObjectives.filter(o => o.trim()) as any,
       };
 
       if (isEdit) {
