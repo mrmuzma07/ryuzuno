@@ -11,6 +11,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut, hasRole } = useAuth();
+  const { itemCount } = useCart();
 
   const navLinks = [
     { to: "/", label: "Home" },
