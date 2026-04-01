@@ -394,12 +394,14 @@ const TeacherCourseForm = () => {
                         onChange={(e) => updateLesson(sIdx, lIdx, "video_url", e.target.value)}
                         placeholder="Video URL (opsional)"
                       />
-                      <Textarea
-                        value={lesson.content}
-                        onChange={(e) => updateLesson(sIdx, lIdx, "content", e.target.value)}
-                        placeholder="Konten lesson (opsional)"
-                        rows={2}
-                      />
+                      <div className="space-y-1">
+                        <span className="text-xs text-muted-foreground font-medium">Konten Lesson</span>
+                        <TipTapEditor
+                          content={lesson.content}
+                          onChange={(val) => updateLesson(sIdx, lIdx, "content", val)}
+                          placeholder="Tulis konten lesson..."
+                        />
+                      </div>
                     </div>
                   ))}
                   <Button size="sm" variant="ghost" onClick={() => addLesson(sIdx)} className="gap-1 text-xs">
