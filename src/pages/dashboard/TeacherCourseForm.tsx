@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2, GripVertical, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, GripVertical, Loader2, Save, Upload, ImageIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type DifficultyLevel = Database["public"]["Enums"]["difficulty_level"];
