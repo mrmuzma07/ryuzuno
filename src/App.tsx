@@ -41,6 +41,9 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<StudentDashboard />} />
+            <Route path="/dashboard/courses" element={<StudentCourses />} />
+            <Route path="/dashboard/paths" element={<StudentLearningPaths />} />
+            <Route path="/dashboard/course-player/:courseId" element={<CoursePlayer />} />
             <Route path="/dashboard/badges" element={<StudentBadges />} />
             <Route path="/teacher" element={<TeacherDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
