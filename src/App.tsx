@@ -69,6 +69,8 @@ const App = () => (
             <Route path="/admin/badges" element={<AdminBadges />} />
             <Route path="/admin/paths" element={<AdminLearningPaths />} />
             <Route path="/moderator" element={<ModeratorDashboard />} />
+            <Route path="/moderator/queue" element={<ModeratorQueue />} />
+            <Route path="/moderator/log" element={<ModeratorLog />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
