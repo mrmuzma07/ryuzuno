@@ -50,6 +50,11 @@ const App = () => (
             <Route path="/dashboard/course-player/:courseId" element={<CoursePlayer />} />
             <Route path="/dashboard/badges" element={<StudentBadges />} />
             <Route path="/teacher" element={<TeacherDashboard />} />
+            <Route path="/teacher/courses" element={<TeacherCourses />} />
+            <Route path="/teacher/create" element={<TeacherCourseForm />} />
+            <Route path="/teacher/edit/:courseId" element={<TeacherCourseForm />} />
+            <Route path="/teacher/students" element={<TeacherStudents />} />
+            <Route path="/teacher/reviews" element={<TeacherReviews />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/moderator" element={<ModeratorDashboard />} />
             <Route path="*" element={<NotFound />} />
