@@ -17,6 +17,8 @@ import StudentBadges from "./pages/dashboard/StudentBadges";
 import StudentCourses from "./pages/dashboard/StudentCourses";
 import StudentLearningPaths from "./pages/dashboard/StudentLearningPaths";
 import CoursePlayer from "./pages/dashboard/CoursePlayer";
+import StudentLeaderboard from "./pages/dashboard/StudentLeaderboard";
+import StudentProfile from "./pages/dashboard/StudentProfile";
 import TeacherDashboard from "./pages/dashboard/TeacherDashboard";
 import TeacherCourses from "./pages/dashboard/TeacherCourses";
 import TeacherCourseForm from "./pages/dashboard/TeacherCourseForm";
@@ -56,6 +58,8 @@ const App = () => (
             <Route path="/dashboard/paths" element={<StudentLearningPaths />} />
             <Route path="/dashboard/course-player/:courseId" element={<CoursePlayer />} />
             <Route path="/dashboard/badges" element={<StudentBadges />} />
+            <Route path="/dashboard/leaderboard" element={<StudentLeaderboard />} />
+            <Route path="/dashboard/profile" element={<StudentProfile />} />
             <Route path="/teacher" element={<TeacherDashboard />} />
             <Route path="/teacher/courses" element={<TeacherCourses />} />
             <Route path="/teacher/create" element={<TeacherCourseForm />} />
