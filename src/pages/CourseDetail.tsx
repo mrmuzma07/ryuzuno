@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils-format";
 import { Star, Users, Clock, BookOpen, Play, CheckCircle, ArrowLeft, Loader2, Tag, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
