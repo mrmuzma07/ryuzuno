@@ -103,6 +103,8 @@ const TeacherCourseForm = () => {
       setPrice(String(course.price));
       setCategoryId(course.category_id || "");
       setThumbnailUrl(course.thumbnail_url || "");
+      const objectives = (course as any).learning_objectives;
+      setLearningObjectives(Array.isArray(objectives) ? objectives : []);
     }
 
     const { data: secs } = await supabase
