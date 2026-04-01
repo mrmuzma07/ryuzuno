@@ -50,8 +50,32 @@ const TeacherCourseForm = () => {
   const [categoryId, setCategoryId] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
 
+  const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
+
   // Curriculum
   const [sections, setSections] = useState<SectionForm[]>([]);
+
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith("image/")) { toast.error("File harus berupa gambar"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Ukuran file maksimal 5MB"); return; }
+
+    setUploadingThumbnail(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("course-thumbnails").upload(filePath, file);
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from("course-thumbnails").getPublicUrl(filePath);
+      setThumbnailUrl(urlData.publicUrl);
+      toast.success("Thumbnail berhasil diupload!");
+    } catch (err: any) {
+      toast.error(err.message || "Gagal upload thumbnail");
+    } finally {
+      setUploadingThumbnail(false);
+    }
+  };
 
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => {
