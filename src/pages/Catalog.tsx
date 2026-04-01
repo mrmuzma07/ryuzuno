@@ -81,7 +81,7 @@ const Catalog = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((course: any) => (
-            <CourseCard key={course.id} id={course.id} title={course.title} price={course.price} rating={course.rating} level={course.level} category_name={course.category_name} total_students={course.total_students} />
+            <CourseCard key={course.id} id={course.id} title={course.title} price={course.price} rating={course.rating} level={course.level} category_name={course.category_name} total_students={course.total_students} thumbnail_url={course.thumbnail_url} />
           ))}
         </div>
 
