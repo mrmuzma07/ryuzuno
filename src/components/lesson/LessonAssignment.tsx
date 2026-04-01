@@ -120,7 +120,7 @@ const LessonAssignment = ({ lessonId }: Props) => {
 
       {submission ? (
         <Card className="p-4 rounded-xl space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-green-600">
+          <div className="flex items-center gap-2 text-sm font-medium text-primary">
             <CheckCircle className="w-4 h-4" /> Tugas sudah dikumpulkan
           </div>
           <p className="text-xs text-muted-foreground">Dikumpulkan: {new Date(submission.submitted_at).toLocaleString("id-ID")}</p>
