@@ -417,6 +417,34 @@ const TeacherCourseForm = () => {
                 </div>
               </div>
             </div>
+
+            {/* Learning Objectives */}
+            <div className="space-y-2">
+              <Label>Yang Akan Dipelajari</Label>
+              <p className="text-xs text-muted-foreground">Daftar hal yang akan dipelajari siswa di kursus ini</p>
+              <div className="space-y-2">
+                {learningObjectives.map((obj, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input
+                      value={obj}
+                      onChange={(e) => {
+                        const updated = [...learningObjectives];
+                        updated[i] = e.target.value;
+                        setLearningObjectives(updated);
+                      }}
+                      placeholder={`Poin ${i + 1}`}
+                      className="flex-1"
+                    />
+                    <Button type="button" size="icon" variant="ghost" className="text-destructive shrink-0" onClick={() => setLearningObjectives(learningObjectives.filter((_, idx) => idx !== i))}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button type="button" size="sm" variant="outline" onClick={() => setLearningObjectives([...learningObjectives, ""])} className="gap-1 text-xs">
+                  <Plus className="w-3 h-3" /> Tambah Poin
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
