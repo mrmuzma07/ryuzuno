@@ -45,7 +45,7 @@ const Register = () => {
             <span className="gradient-primary text-primary-foreground w-10 h-10 rounded-xl flex items-center justify-center">
               <BookOpen className="w-5 h-5" />
             </span>
-            <span className="text-gradient-primary">EduQuest</span>
+            <span className="text-gradient-primary">RyuZuno</span>
           </Link>
           <p className="text-muted-foreground text-sm mt-2">Mulai petualangan belajarmu! 🚀</p>
         </div>

@@ -1,12 +1,16 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { courses, formatPrice } from "@/lib/mock-data";
-import { Star, Users, Clock, BookOpen, Play, CheckCircle, ArrowLeft } from "lucide-react";
+import { Star, Users, Clock, BookOpen, Play, CheckCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 const mockSections = [
   {
@@ -36,7 +40,57 @@ const mockSections = [
 
 const CourseDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [enrolling, setEnrolling] = useState(false);
   const course = courses.find((c) => c.id === id);
+
+  // Check if user is already enrolled (for DB courses)
+  const { data: enrollment, refetch: refetchEnrollment } = useQuery({
+    queryKey: ["enrollment", id, user?.id],
+    queryFn: async () => {
+      if (!user || !id) return null;
+      const { data } = await supabase
+        .from("enrollments")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("course_id", id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user && !!id,
+  });
+
+  const handleEnroll = async () => {
+    if (!user) {
+      toast.error("Silakan login terlebih dahulu!");
+      navigate("/login");
+      return;
+    }
+    if (!id) return;
+
+    setEnrolling(true);
+    try {
+      const { error } = await supabase
+        .from("enrollments")
+        .insert({ user_id: user.id, course_id: id });
+
+      if (error) {
+        if (error.code === "23505") {
+          toast.info("Kamu sudah terdaftar di kursus ini!");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success("Berhasil enroll! Selamat belajar 🎉");
+        refetchEnrollment();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Gagal enroll kursus");
+    } finally {
+      setEnrolling(false);
+    }
+  };
 
   if (!course) {
     return (
@@ -50,6 +104,8 @@ const CourseDetail = () => {
       </div>
     );
   }
+
+  const isEnrolled = !!enrollment;
 
   return (
     <div className="min-h-screen">
@@ -86,9 +142,22 @@ const CourseDetail = () => {
                 <Play className="w-12 h-12 text-primary" />
               </div>
               <p className="font-heading text-3xl font-bold text-primary">{formatPrice(course.price)}</p>
-              <Button className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12">
-                Enroll Sekarang
-              </Button>
+              {isEnrolled ? (
+                <Button
+                  className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12"
+                  onClick={() => navigate(`/dashboard/course-player/${id}`)}
+                >
+                  Lanjutkan Belajar 📖
+                </Button>
+              ) : (
+                <Button
+                  className="w-full rounded-xl gradient-primary border-0 font-bold text-base h-12"
+                  onClick={handleEnroll}
+                  disabled={enrolling}
+                >
+                  {enrolling ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Mendaftar...</> : "Enroll Sekarang"}
+                </Button>
+              )}
               <Button variant="outline" className="w-full rounded-xl font-bold">
                 Tambah ke Wishlist
               </Button>
