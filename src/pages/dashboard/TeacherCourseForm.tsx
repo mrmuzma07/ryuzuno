@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import TipTapEditor from "@/components/TipTapEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
@@ -276,7 +276,7 @@ const TeacherCourseForm = () => {
             </div>
             <div className="space-y-2">
               <Label>Deskripsi</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Deskripsi kursus..." rows={4} />
+              <TipTapEditor content={description} onChange={setDescription} placeholder="Deskripsi kursus..." />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -394,12 +394,14 @@ const TeacherCourseForm = () => {
                         onChange={(e) => updateLesson(sIdx, lIdx, "video_url", e.target.value)}
                         placeholder="Video URL (opsional)"
                       />
-                      <Textarea
-                        value={lesson.content}
-                        onChange={(e) => updateLesson(sIdx, lIdx, "content", e.target.value)}
-                        placeholder="Konten lesson (opsional)"
-                        rows={2}
-                      />
+                      <div className="space-y-1">
+                        <span className="text-xs text-muted-foreground font-medium">Konten Lesson</span>
+                        <TipTapEditor
+                          content={lesson.content}
+                          onChange={(val) => updateLesson(sIdx, lIdx, "content", val)}
+                          placeholder="Tulis konten lesson..."
+                        />
+                      </div>
                     </div>
                   ))}
                   <Button size="sm" variant="ghost" onClick={() => addLesson(sIdx)} className="gap-1 text-xs">
