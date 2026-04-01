@@ -20,9 +20,9 @@ const Login = () => {
     try {
       await signIn(email, password);
       // Fetch roles to determine redirect
-      const { data: { user } } = await (await import("@/integrations/supabase/client")).supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: rolesData } = await (await import("@/integrations/supabase/client")).supabase
+        const { data: rolesData } = await supabase
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id);
