@@ -213,7 +213,7 @@ const CoursePlayer = () => {
                 {activeLesson.video_url ? (
                   <div className="aspect-video bg-black rounded-2xl overflow-hidden">
                     <iframe
-                      src={activeLesson.video_url}
+                      src={toEmbedUrl(activeLesson.video_url)}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
