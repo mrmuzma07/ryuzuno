@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2, GripVertical, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, GripVertical, Loader2, Save, Upload, ImageIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type DifficultyLevel = Database["public"]["Enums"]["difficulty_level"];
@@ -50,8 +50,32 @@ const TeacherCourseForm = () => {
   const [categoryId, setCategoryId] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
 
+  const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
+
   // Curriculum
   const [sections, setSections] = useState<SectionForm[]>([]);
+
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith("image/")) { toast.error("File harus berupa gambar"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Ukuran file maksimal 5MB"); return; }
+
+    setUploadingThumbnail(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("course-thumbnails").upload(filePath, file);
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from("course-thumbnails").getPublicUrl(filePath);
+      setThumbnailUrl(urlData.publicUrl);
+      toast.success("Thumbnail berhasil diupload!");
+    } catch (err: any) {
+      toast.error(err.message || "Gagal upload thumbnail");
+    } finally {
+      setUploadingThumbnail(false);
+    }
+  };
 
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => {
@@ -283,8 +307,34 @@ const TeacherCourseForm = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Thumbnail URL</Label>
-              <Input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="https://..." />
+              <Label>Thumbnail / Course Cover</Label>
+              <div className="flex flex-col gap-3">
+                {thumbnailUrl && (
+                  <div className="relative w-full max-w-sm">
+                    <img src={thumbnailUrl} alt="Course thumbnail" className="w-full aspect-video object-cover rounded-xl border" />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="destructive"
+                      className="absolute top-2 right-2 w-7 h-7"
+                      onClick={() => setThumbnailUrl("")}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                )}
+                <div className="flex gap-2 items-center">
+                  <label className="cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} disabled={uploadingThumbnail} />
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-muted hover:bg-muted/80 text-sm font-medium transition-colors">
+                      {uploadingThumbnail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      Upload Gambar
+                    </div>
+                  </label>
+                  <span className="text-xs text-muted-foreground">atau</span>
+                  <Input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="Paste URL gambar..." className="flex-1" />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

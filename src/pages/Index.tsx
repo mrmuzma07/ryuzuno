@@ -137,6 +137,7 @@ const Index = () => {
                 level={course.level}
                 category_name={course.category_name}
                 total_students={course.total_students}
+                thumbnail_url={course.thumbnail_url}
               />
             ))}
           </div>
