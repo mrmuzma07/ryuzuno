@@ -7,7 +7,7 @@ const AdminDashboard = () => (
     <div className="space-y-8">
       <div>
         <h1 className="font-heading text-2xl md:text-3xl font-bold">Admin Dashboard ⚙️</h1>
-        <p className="text-muted-foreground">Overview platform EduQuest</p>
+        <p className="text-muted-foreground">Overview platform RyuZuno</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

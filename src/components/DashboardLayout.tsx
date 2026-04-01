@@ -59,7 +59,7 @@ const DashboardLayout = ({ children, role }: { children: ReactNode; role: Role }
         <div className="p-5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-heading font-bold text-lg text-sidebar-primary-foreground">
             <BookOpen className="w-5 h-5" />
-            EduQuest
+            RyuZuno
           </Link>
           <button className="lg:hidden text-sidebar-foreground" onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5" />
