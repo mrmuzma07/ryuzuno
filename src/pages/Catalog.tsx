@@ -3,21 +3,43 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { courses, categories } from "@/lib/mock-data";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const levels = ["Beginner", "Intermediate", "Advanced"];
+const levels = ["beginner", "intermediate", "advanced"];
 
 const Catalog = () => {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
-  const filtered = courses.filter((c) => {
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await supabase.from("categories").select("*");
+      return data || [];
+    },
+  });
+
+  const { data: courses = [] } = useQuery({
+    queryKey: ["catalog-courses"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("courses")
+        .select("*, categories(name)")
+        .eq("status", "published");
+      return (data || []).map((c: any) => ({
+        ...c,
+        category_name: c.categories?.name || "",
+      }));
+    },
+  });
+
+  const filtered = courses.filter((c: any) => {
     if (search && !c.title.toLowerCase().includes(search.toLowerCase())) return false;
-    if (selectedCategory && c.category !== selectedCategory) return false;
+    if (selectedCategory && c.category_name !== selectedCategory) return false;
     if (selectedLevel && c.level !== selectedLevel) return false;
     return true;
   });
@@ -32,31 +54,15 @@ const Catalog = () => {
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Cari kursus..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 rounded-xl"
-            />
+            <Input placeholder="Cari kursus..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 rounded-xl" />
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
           <span className="text-sm font-semibold text-muted-foreground mr-2">Kategori:</span>
-          <Badge
-            variant={selectedCategory === null ? "default" : "outline"}
-            className="cursor-pointer rounded-xl"
-            onClick={() => setSelectedCategory(null)}
-          >
-            Semua
-          </Badge>
-          {categories.map((cat) => (
-            <Badge
-              key={cat.id}
-              variant={selectedCategory === cat.name ? "default" : "outline"}
-              className="cursor-pointer rounded-xl"
-              onClick={() => setSelectedCategory(cat.name === selectedCategory ? null : cat.name)}
-            >
+          <Badge variant={selectedCategory === null ? "default" : "outline"} className="cursor-pointer rounded-xl" onClick={() => setSelectedCategory(null)}>Semua</Badge>
+          {categories.map((cat: any) => (
+            <Badge key={cat.id} variant={selectedCategory === cat.name ? "default" : "outline"} className="cursor-pointer rounded-xl" onClick={() => setSelectedCategory(cat.name === selectedCategory ? null : cat.name)}>
               {cat.icon} {cat.name}
             </Badge>
           ))}
@@ -65,12 +71,7 @@ const Catalog = () => {
         <div className="flex flex-wrap gap-2 mb-8">
           <span className="text-sm font-semibold text-muted-foreground mr-2">Level:</span>
           {levels.map((lvl) => (
-            <Badge
-              key={lvl}
-              variant={selectedLevel === lvl ? "default" : "outline"}
-              className="cursor-pointer rounded-xl"
-              onClick={() => setSelectedLevel(lvl === selectedLevel ? null : lvl)}
-            >
+            <Badge key={lvl} variant={selectedLevel === lvl ? "default" : "outline"} className="cursor-pointer rounded-xl capitalize" onClick={() => setSelectedLevel(lvl === selectedLevel ? null : lvl)}>
               {lvl}
             </Badge>
           ))}
@@ -79,8 +80,8 @@ const Catalog = () => {
         <p className="text-sm text-muted-foreground mb-6">{filtered.length} kursus ditemukan</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filtered.map((course) => (
-            <CourseCard key={course.id} {...course} />
+          {filtered.map((course: any) => (
+            <CourseCard key={course.id} id={course.id} title={course.title} price={course.price} rating={course.rating} level={course.level} category_name={course.category_name} total_students={course.total_students} />
           ))}
         </div>
 
