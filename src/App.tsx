@@ -29,6 +29,8 @@ import AdminCategories from "./pages/dashboard/AdminCategories";
 import AdminBadges from "./pages/dashboard/AdminBadges";
 import AdminLearningPaths from "./pages/dashboard/AdminLearningPaths";
 import ModeratorDashboard from "./pages/dashboard/ModeratorDashboard";
+import ModeratorQueue from "./pages/dashboard/ModeratorQueue";
+import ModeratorLog from "./pages/dashboard/ModeratorLog";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
