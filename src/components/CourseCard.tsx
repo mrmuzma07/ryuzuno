@@ -19,6 +19,7 @@ interface CourseCardProps {
   duration?: string;
   lessonCount?: number;
   badges?: string[];
+  thumbnail_url?: string | null;
 }
 
 const levelColors: Record<string, string> = {
