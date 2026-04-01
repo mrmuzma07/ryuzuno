@@ -111,7 +111,7 @@ const CourseDetail = () => {
   const isEnrolled = !!enrollment;
   const totalLessons = sections.reduce((sum: number, s: any) => sum + (s.lessons?.length || 0), 0);
   const totalMinutes = sections.reduce((sum: number, s: any) => sum + (s.lessons || []).reduce((ls: number, l: any) => ls + (l.duration_minutes || 0), 0), 0);
-  const teacherName = (course as any).profiles?.full_name || "Instructor";
+  const teacherName = course?.teacher_name || "Instructor";
 
   return (
     <div className="min-h-screen">
