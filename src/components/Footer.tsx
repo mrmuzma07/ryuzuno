@@ -8,7 +8,7 @@ const Footer = () => (
         <div>
           <Link to="/" className="flex items-center gap-2 font-heading font-bold text-xl text-background mb-4">
             <BookOpen className="w-5 h-5" />
-            EduQuest
+            RyuZuno
           </Link>
           <p className="text-sm opacity-70">Platform e-learning gamified terbaik untuk meningkatkan skill kamu! 🚀</p>
         </div>
