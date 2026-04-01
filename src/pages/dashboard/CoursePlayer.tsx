@@ -8,6 +8,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, CheckCircle, Circle, PlayCircle, FileText, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/DashboardLayout";
+import LessonAttachments from "@/components/lesson/LessonAttachments";
+import LessonQuiz from "@/components/lesson/LessonQuiz";
+import LessonCodingExercise from "@/components/lesson/LessonCodingExercise";
+import LessonAssignment from "@/components/lesson/LessonAssignment";
 
 interface Section {
   id: string;
