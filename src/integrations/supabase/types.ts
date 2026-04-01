@@ -14,6 +14,88 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignment_submissions: {
+        Row: {
+          assignment_id: string
+          feedback: string | null
+          file_name: string | null
+          file_url: string | null
+          grade: number | null
+          graded_at: string | null
+          id: string
+          submitted_at: string
+          text_content: string | null
+          user_id: string
+        }
+        Insert: {
+          assignment_id: string
+          feedback?: string | null
+          file_name?: string | null
+          file_url?: string | null
+          grade?: number | null
+          graded_at?: string | null
+          id?: string
+          submitted_at?: string
+          text_content?: string | null
+          user_id: string
+        }
+        Update: {
+          assignment_id?: string
+          feedback?: string | null
+          file_name?: string | null
+          file_url?: string | null
+          grade?: number | null
+          graded_at?: string | null
+          id?: string
+          submitted_at?: string
+          text_content?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assignments: {
+        Row: {
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          lesson_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          lesson_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          lesson_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       badges: {
         Row: {
           created_at: string
@@ -67,6 +149,76 @@ export type Database = {
           slug?: string
         }
         Relationships: []
+      }
+      coding_exercises: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          language: string
+          lesson_id: string
+          starter_code: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          language?: string
+          lesson_id: string
+          starter_code?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          language?: string
+          lesson_id?: string
+          starter_code?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coding_exercises_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coding_submissions: {
+        Row: {
+          code: string
+          exercise_id: string
+          id: string
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          code?: string
+          exercise_id: string
+          id?: string
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          exercise_id?: string
+          id?: string
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coding_submissions_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "coding_exercises"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_reviews: {
         Row: {
@@ -306,6 +458,41 @@ export type Database = {
           },
         ]
       }
+      lesson_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          lesson_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          lesson_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          lesson_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_attachments_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_progress: {
         Row: {
           completed: boolean
@@ -408,6 +595,105 @@ export type Database = {
           xp_points?: number
         }
         Relationships: []
+      }
+      quiz_attempts: {
+        Row: {
+          answers: Json
+          completed_at: string
+          id: string
+          quiz_id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          completed_at?: string
+          id?: string
+          quiz_id: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string
+          id?: string
+          quiz_id?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          id: string
+          options: Json
+          question: string
+          quiz_id: string
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          options?: Json
+          question: string
+          quiz_id: string
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          options?: Json
+          question?: string
+          quiz_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string
+          id: string
+          lesson_id: string
+          passing_score: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lesson_id: string
+          passing_score?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          passing_score?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
