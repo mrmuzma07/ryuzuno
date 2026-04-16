@@ -1,42 +1,39 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import {
-  BookOpen, LayoutDashboard, GraduationCap, Trophy, Award, User, LogOut,
-  Menu, X, PlusCircle, Users, Settings, FileCheck, Shield, BarChart3, Tag, Route
+  BookOpen, Menu, X,
 } from "lucide-react";
 
 type Role = "student" | "teacher" | "admin" | "moderator";
 
-const navItems: Record<Role, { to: string; label: string; icon: any }[]> = {
+const navItems: Record<Role, { to: string; label: string; icon: string }[]> = {
   student: [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/dashboard/courses", label: "Kursus Saya", icon: GraduationCap },
-    { to: "/dashboard/paths", label: "Learning Paths", icon: Route },
-    { to: "/dashboard/badges", label: "Badges", icon: Award },
-    { to: "/dashboard/leaderboard", label: "Leaderboard", icon: Trophy },
-    { to: "/dashboard/profile", label: "Profile", icon: User },
+    { to: "/dashboard", label: "Dashboard", icon: "dashboard" },
+    { to: "/dashboard/courses", label: "Kursus Saya", icon: "school" },
+    { to: "/dashboard/paths", label: "Learning Paths", icon: "route" },
+    { to: "/dashboard/badges", label: "Badges", icon: "military_tech" },
+    { to: "/dashboard/leaderboard", label: "Leaderboard", icon: "leaderboard" },
+    { to: "/dashboard/profile", label: "Profile", icon: "person" },
   ],
   teacher: [
-    { to: "/teacher", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/teacher/courses", label: "Kursus Saya", icon: GraduationCap },
-    { to: "/teacher/create", label: "Buat Kursus", icon: PlusCircle },
-    { to: "/teacher/students", label: "Students", icon: Users },
-    { to: "/teacher/reviews", label: "Reviews", icon: FileCheck },
+    { to: "/teacher", label: "Dashboard", icon: "dashboard" },
+    { to: "/teacher/courses", label: "Kursus Saya", icon: "school" },
+    { to: "/teacher/create", label: "Buat Kursus", icon: "add_circle" },
+    { to: "/teacher/students", label: "Students", icon: "groups" },
+    { to: "/teacher/reviews", label: "Reviews", icon: "rate_review" },
   ],
   admin: [
-    { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/admin/users", label: "Users", icon: Users },
-    { to: "/admin/courses", label: "Courses", icon: GraduationCap },
-    { to: "/admin/paths", label: "Learning Paths", icon: Route },
-    { to: "/admin/badges", label: "Badges", icon: Award },
-    { to: "/admin/categories", label: "Kategori", icon: Tag },
-    { to: "/admin/reports", label: "Reports", icon: BarChart3 },
+    { to: "/admin", label: "Dashboard", icon: "dashboard" },
+    { to: "/admin/users", label: "Users", icon: "groups" },
+    { to: "/admin/courses", label: "Courses", icon: "school" },
+    { to: "/admin/paths", label: "Learning Paths", icon: "route" },
+    { to: "/admin/badges", label: "Badges", icon: "military_tech" },
+    { to: "/admin/categories", label: "Kategori", icon: "label" },
   ],
   moderator: [
-    { to: "/moderator", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/moderator/queue", label: "Review Queue", icon: FileCheck },
-    { to: "/moderator/log", label: "Moderation Log", icon: Shield },
+    { to: "/moderator", label: "Dashboard", icon: "dashboard" },
+    { to: "/moderator/queue", label: "Review Queue", icon: "assignment" },
+    { to: "/moderator/log", label: "Moderation Log", icon: "shield" },
   ],
 };
 
@@ -48,68 +45,119 @@ const roleLabels: Record<Role, string> = {
 };
 
 const DashboardLayout = ({ children, role }: { children: ReactNode; role: Role }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const items = navItems[role];
 
   return (
-    <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-sidebar text-sidebar-foreground transform transition-transform lg:translate-x-0 lg:static ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="p-5 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-heading font-bold text-lg text-sidebar-primary-foreground">
-            <BookOpen className="w-5 h-5" />
-            RyuZuno
-          </Link>
-          <button className="lg:hidden text-sidebar-foreground" onClick={() => setSidebarOpen(false)}>
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <div className="min-h-screen bg-surface text-on-surface">
+      {/* ===== Fixed Top Header ===== */}
+      <header className="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,61,155,0.04)]">
+        <nav className="flex justify-between items-center h-16 px-6 lg:px-8 w-full">
+          {/* Left: Logo + Role Badge + Nav Links */}
+          <div className="flex items-center gap-4 lg:gap-6">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
+              <BookOpen className="w-5 h-5 text-[#003d9b]" />
+              <span className="text-xl font-extrabold tracking-tighter text-[#003d9b] font-headline">RyuZuno</span>
+            </Link>
 
-        <div className="px-4 mb-4">
-          <span className="text-[10px] uppercase tracking-widest text-sidebar-foreground/50 font-bold">{roleLabels[role]}</span>
-        </div>
+            {/* Role badge */}
+            <span className="hidden md:inline-flex px-2.5 py-0.5 bg-[#003d9b]/10 text-[#003d9b] text-[10px] font-extrabold uppercase tracking-widest rounded-full">
+              {roleLabels[role]}
+            </span>
 
-        <nav className="px-3 space-y-1">
-          {items.map((item) => {
-            const active = location.pathname === item.to;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  active ? "bg-sidebar-accent text-sidebar-primary-foreground" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-                }`}
-                onClick={() => setSidebarOpen(false)}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.label}
-              </Link>
-            );
-          })}
+            {/* Desktop nav links */}
+            <div className="hidden lg:flex gap-1 items-center font-headline text-sm tracking-wide">
+              {items.map((item) => {
+                const isActive = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`px-3 py-1.5 rounded-lg transition-colors ${
+                      isActive
+                        ? "text-[#003d9b] font-bold bg-[#003d9b]/5"
+                        : "text-slate-500 hover:text-[#003d9b] hover:bg-slate-100/50"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right: Icons + Avatar */}
+          <div className="flex items-center gap-3">
+            {/* Mobile menu toggle */}
+            <button
+              className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            <button className="hidden md:flex p-2 text-slate-500 hover:bg-[#003d9b]/5 rounded-lg transition-all">
+              <span className="material-symbols-outlined">notifications</span>
+            </button>
+            <button className="hidden md:flex p-2 text-slate-500 hover:bg-[#003d9b]/5 rounded-lg transition-all">
+              <span className="material-symbols-outlined">settings</span>
+            </button>
+
+            {/* User avatar */}
+            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold ring-2 ring-[#003d9b]/10">
+              U
+            </div>
+          </div>
         </nav>
 
-        <div className="absolute bottom-4 left-0 right-0 px-3">
-          <Link to="/">
-            <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/60 hover:text-sidebar-foreground text-sm">
-              <LogOut className="w-4 h-4 mr-2" /> Keluar
-            </Button>
-          </Link>
-        </div>
-      </aside>
+        {/* Mobile Nav Dropdown */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-slate-100 shadow-lg">
+            <div className="px-4 py-3 space-y-1">
+              {/* Role badge on mobile */}
+              <div className="px-3 py-2 mb-2">
+                <span className="px-2.5 py-0.5 bg-[#003d9b]/10 text-[#003d9b] text-[10px] font-extrabold uppercase tracking-widest rounded-full">
+                  {roleLabels[role]}
+                </span>
+              </div>
+              {items.map((item) => {
+                const isActive = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? "text-[#003d9b] bg-[#003d9b]/5 font-bold"
+                        : "text-slate-500 hover:text-[#003d9b] hover:bg-slate-50"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-lg">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                );
+              })}
 
-      {/* Overlay */}
-      {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
+              {/* Logout on mobile */}
+              <div className="border-t border-slate-100 mt-2 pt-2">
+                <Link
+                  to="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-red-500 hover:bg-red-50/50 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-lg">logout</span>
+                  Keluar
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
 
-      {/* Main */}
-      <main className="flex-1 min-h-screen">
-        <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-lg border-b px-4 h-14 flex items-center lg:px-8">
-          <button className="lg:hidden mr-3" onClick={() => setSidebarOpen(true)}>
-            <Menu className="w-5 h-5" />
-          </button>
-          <div className="flex-1" />
-          <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-xs font-bold">U</div>
-        </header>
+      {/* ===== Main Content ===== */}
+      <main className="pt-16 min-h-screen">
         <div className="p-4 lg:p-8">{children}</div>
       </main>
     </div>
