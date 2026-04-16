@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ArrowLeft, CheckCircle, Circle, PlayCircle, FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, CheckCircle, Circle, PlayCircle, FileText, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/DashboardLayout";
 import LessonAttachments from "@/components/lesson/LessonAttachments";
@@ -51,7 +49,6 @@ const CoursePlayer = () => {
   }, [courseId, user]);
 
   const fetchCourseData = async () => {
-    // Fetch course
     const { data: courseData } = await supabase
       .from("courses")
       .select("*")
@@ -59,7 +56,6 @@ const CoursePlayer = () => {
       .single();
     setCourse(courseData);
 
-    // Fetch sections with lessons
     const { data: sectionsData } = await supabase
       .from("sections")
       .select("id, title, sort_order")
@@ -73,7 +69,6 @@ const CoursePlayer = () => {
         .in("section_id", sectionsData.map((s) => s.id))
         .order("sort_order");
 
-      // Fetch user progress
       const { data: progressData } = await supabase
         .from("lesson_progress")
         .select("lesson_id, completed")
@@ -92,11 +87,8 @@ const CoursePlayer = () => {
       }));
 
       setSections(builtSections);
-
-      // Expand all sections initially
       setExpandedSections(new Set(sectionsData.map((s) => s.id)));
 
-      // Auto-select first incomplete lesson or first lesson
       const allLessons = builtSections.flatMap((s) => s.lessons);
       const firstIncomplete = allLessons.find((l) => !completedSet.has(l.id));
       setActiveLesson(firstIncomplete || allLessons[0] || null);
@@ -122,7 +114,6 @@ const CoursePlayer = () => {
     );
 
     if (error) {
-      // If upsert fails due to no unique constraint, try insert
       await supabase.from("lesson_progress").insert({
         user_id: user.id,
         lesson_id: activeLesson.id,
@@ -139,16 +130,14 @@ const CoursePlayer = () => {
       }))
     );
 
-    toast.success("Lesson selesai! 🎉");
+    toast.success("Lesson selesai!");
 
-    // Auto-advance to next lesson
     const allLessons = sections.flatMap((s) => s.lessons);
     const currentIndex = allLessons.findIndex((l) => l.id === activeLesson.id);
     if (currentIndex < allLessons.length - 1) {
       setActiveLesson({ ...allLessons[currentIndex + 1], completed: completedLessons.has(allLessons[currentIndex + 1].id) });
     }
 
-    // Update enrollment progress
     const totalLessons = allLessons.length;
     const newCompleted = completedLessons.size + 1;
     const newProgress = Math.round((newCompleted / totalLessons) * 100);
@@ -166,9 +155,10 @@ const CoursePlayer = () => {
   if (loading) {
     return (
       <DashboardLayout role="student">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/3" />
-          <div className="h-64 bg-muted rounded-xl" />
+        <div className="animate-pulse space-y-6">
+          <div className="h-10 bg-surface-container-high rounded-lg w-1/3" />
+          <div className="h-2 bg-surface-container-high rounded-full w-full" />
+          <div className="h-[400px] bg-surface-container-high rounded-2xl" />
         </div>
       </DashboardLayout>
     );
@@ -178,9 +168,11 @@ const CoursePlayer = () => {
     return (
       <DashboardLayout role="student">
         <div className="text-center py-20">
-          <p className="text-4xl mb-4">📚</p>
-          <h1 className="font-heading text-2xl font-bold mb-2">Kursus tidak ditemukan</h1>
-          <Link to="/dashboard/courses"><Button className="rounded-xl mt-4">Kembali</Button></Link>
+          <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">menu_book</span>
+          <h1 className="font-headline text-2xl font-bold text-[#003d9b] mb-2">Kursus tidak ditemukan</h1>
+          <Link to="/dashboard/courses">
+            <Button className="rounded-lg mt-4 bg-[#003d9b] hover:bg-primary-container text-white">Kembali</Button>
+          </Link>
         </div>
       </DashboardLayout>
     );
@@ -188,34 +180,61 @@ const CoursePlayer = () => {
 
   return (
     <DashboardLayout role="student">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <Link to="/dashboard/courses">
-            <Button variant="ghost" size="icon" className="rounded-xl">
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-          </Link>
-          <div className="flex-1">
-            <h1 className="font-heading text-xl md:text-2xl font-bold line-clamp-1">{course.title}</h1>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-              <span>{completedLessons.size}/{totalLessons} lessons</span>
-              <span>•</span>
-              <span>{overallProgress}% selesai</span>
+      <div className="space-y-8">
+        {/* Hero Header */}
+        <div className="hero-gradient text-white rounded-2xl px-8 py-8 relative overflow-hidden">
+          {/* Decorative blurs */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none">
+            <div className="absolute top-4 right-8 w-48 h-48 bg-white rounded-full blur-3xl" />
+            <div className="absolute bottom-[-30px] left-[-10px] w-64 h-64 bg-[#693600] rounded-full blur-3xl" />
+          </div>
+
+          <div className="relative z-10">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 mb-4 text-sm text-blue-200">
+              <Link to="/dashboard/courses" className="hover:text-white transition-colors flex items-center gap-1">
+                <ArrowLeft className="w-4 h-4" />
+                Kursus Saya
+              </Link>
+              <span className="material-symbols-outlined text-xs">chevron_right</span>
+              <span className="text-white">{course.title}</span>
+            </nav>
+
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline leading-tight mb-3">
+              {course.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-4 text-sm text-blue-100">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-base">menu_book</span>
+                <span>{completedLessons.size}/{totalLessons} lessons</span>
+              </div>
+              <div className="h-4 w-px bg-white/20" />
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-base">trending_up</span>
+                <span>{overallProgress}% selesai</span>
+              </div>
+            </div>
+
+            {/* Progress bar */}
+            <div className="mt-5 h-2 bg-white/20 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-[#ffb77d] rounded-full transition-all duration-500"
+                style={{ width: `${overallProgress}%` }}
+              />
             </div>
           </div>
         </div>
 
-        <Progress value={overallProgress} className="h-2" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main content */}
-          <div className="lg:col-span-2 space-y-4">
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left Column - Player & Lesson Content */}
+          <div className="lg:col-span-8 space-y-6">
             {activeLesson ? (
               <>
-                {/* Video Player */}
+                {/* Video / Text Content Area */}
                 {activeLesson.video_url ? (
-                  <div className="aspect-video bg-black rounded-2xl overflow-hidden">
+                  <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-xl">
                     <iframe
                       src={toEmbedUrl(activeLesson.video_url)}
                       className="w-full h-full"
@@ -224,25 +243,33 @@ const CoursePlayer = () => {
                     />
                   </div>
                 ) : (
-                  <Card className="aspect-video rounded-2xl flex items-center justify-center bg-muted">
+                  <div className="aspect-video bg-surface-container-lowest rounded-2xl border border-outline-variant/15 flex items-center justify-center">
                     <div className="text-center">
-                      <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-muted-foreground">Materi Teks</p>
+                      <span className="material-symbols-outlined text-5xl text-outline-variant mb-3 block">description</span>
+                      <p className="text-on-surface-variant font-medium">Materi Teks</p>
                     </div>
-                  </Card>
+                  </div>
                 )}
 
-                {/* Lesson info */}
-                <Card className="p-6 rounded-2xl space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-heading text-lg font-bold">{activeLesson.title}</h2>
+                {/* Lesson Detail Card */}
+                <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/15 space-y-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <h2 className="text-xl md:text-2xl font-bold font-headline text-[#003d9b]">
+                      {activeLesson.title}
+                    </h2>
                     {activeLesson.duration_minutes && (
-                      <span className="text-xs text-muted-foreground">{activeLesson.duration_minutes} menit</span>
+                      <span className="text-sm text-on-surface-variant font-medium shrink-0 flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-base">schedule</span>
+                        {activeLesson.duration_minutes} menit
+                      </span>
                     )}
                   </div>
 
                   {activeLesson.content && (
-                    <div className="prose prose-sm max-w-none text-foreground/80" dangerouslySetInnerHTML={{ __html: activeLesson.content }} />
+                    <div
+                      className="prose prose-slate max-w-none text-on-surface-variant leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: activeLesson.content }}
+                    />
                   )}
 
                   {/* Lesson Features */}
@@ -253,74 +280,165 @@ const CoursePlayer = () => {
                     <LessonAssignment lessonId={activeLesson.id} />
                   </div>
 
+                  {/* Complete / Completed Button */}
                   {!completedLessons.has(activeLesson.id) ? (
-                    <Button onClick={completeLesson} className="rounded-xl gap-2 w-full md:w-auto">
+                    <Button
+                      onClick={completeLesson}
+                      className="rounded-lg gap-2 bg-[#003d9b] hover:bg-primary-container text-white font-bold px-6 py-3 shadow-lg shadow-[#003d9b]/20"
+                    >
                       <CheckCircle className="w-4 h-4" /> Tandai Selesai
                     </Button>
                   ) : (
-                    <div className="flex items-center gap-2 text-fun-green font-bold text-sm">
-                      <CheckCircle className="w-4 h-4" /> Lesson ini sudah selesai
+                    <div className="flex items-center gap-2 text-green-600 font-bold text-sm bg-green-50 px-4 py-3 rounded-lg">
+                      <CheckCircle className="w-5 h-5" /> Lesson ini sudah selesai
                     </div>
                   )}
-                </Card>
+                </div>
               </>
             ) : (
-              <Card className="p-12 text-center rounded-2xl">
-                <p className="text-4xl mb-2">🎉</p>
-                <h2 className="font-heading text-xl font-bold">Belum ada materi</h2>
-                <p className="text-muted-foreground">Kursus ini belum memiliki lesson.</p>
-              </Card>
+              <div className="bg-surface-container-lowest p-16 text-center rounded-2xl border border-outline-variant/15">
+                <span className="material-symbols-outlined text-5xl text-outline-variant mb-3 block">school</span>
+                <h2 className="font-headline text-xl font-bold text-[#003d9b]">Belum ada materi</h2>
+                <p className="text-on-surface-variant mt-2">Kursus ini belum memiliki lesson.</p>
+              </div>
             )}
           </div>
 
-          {/* Sidebar - Curriculum */}
-          <div className="space-y-2">
-            <h3 className="font-heading font-bold text-sm mb-3">Kurikulum</h3>
-            {sections.length === 0 ? (
-              <Card className="p-4 text-center text-sm text-muted-foreground">Belum ada section.</Card>
-            ) : (
-              sections.map((section) => (
-                <Card key={section.id} className="overflow-hidden rounded-xl">
-                  <button
-                    className="w-full p-3 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
-                    onClick={() => toggleSection(section.id)}
-                  >
-                    <span className="font-heading font-bold text-xs">{section.title}</span>
-                    {expandedSections.has(section.id) ? (
-                      <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                    )}
-                  </button>
-                  {expandedSections.has(section.id) && (
-                    <div className="border-t">
-                      {section.lessons.map((lesson) => (
+          {/* Right Sidebar - Curriculum */}
+          <aside className="lg:col-span-4">
+            <div className="sticky top-28 space-y-4">
+              {/* Sidebar Header */}
+              <div className="bg-surface-container-low flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10">
+                <div className="w-10 h-10 bg-[#003d9b]/10 rounded-full flex items-center justify-center text-[#003d9b]">
+                  <span className="material-symbols-outlined">menu_book</span>
+                </div>
+                <div>
+                  <h5 className="font-headline font-bold text-[#003d9b] text-sm">Kurikulum</h5>
+                  <p className="text-xs text-on-surface-variant">
+                    {sections.length} Modul &bull; {totalLessons} Lessons
+                  </p>
+                </div>
+              </div>
+
+              {/* Sections Accordion */}
+              <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/15 overflow-hidden divide-y divide-outline-variant/10">
+                {sections.length === 0 ? (
+                  <div className="p-6 text-center text-sm text-on-surface-variant">
+                    Belum ada section.
+                  </div>
+                ) : (
+                  sections.map((section) => {
+                    const sectionCompleted = section.lessons.filter((l) => completedLessons.has(l.id)).length;
+                    const isExpanded = expandedSections.has(section.id);
+
+                    return (
+                      <div key={section.id}>
+                        {/* Section Header */}
                         <button
-                          key={lesson.id}
-                          className={`w-full p-3 flex items-center gap-2 text-left text-xs hover:bg-muted/30 transition-colors ${
-                            activeLesson?.id === lesson.id ? "bg-primary/10 text-primary" : ""
-                          }`}
-                          onClick={() => setActiveLesson(lesson)}
+                          className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-container-low transition-colors"
+                          onClick={() => toggleSection(section.id)}
                         >
-                          {completedLessons.has(lesson.id) ? (
-                            <CheckCircle className="w-4 h-4 text-fun-green shrink-0" />
-                          ) : activeLesson?.id === lesson.id ? (
-                            <PlayCircle className="w-4 h-4 text-primary shrink-0" />
-                          ) : (
-                            <Circle className="w-4 h-4 text-muted-foreground shrink-0" />
-                          )}
-                          <span className="line-clamp-1 flex-1">{lesson.title}</span>
-                          {lesson.duration_minutes && (
-                            <span className="text-muted-foreground shrink-0">{lesson.duration_minutes}m</span>
-                          )}
+                          <div className="flex-1 min-w-0">
+                            <span className="font-headline font-bold text-sm text-[#003d9b] line-clamp-1">
+                              {section.title}
+                            </span>
+                            <span className="text-xs text-on-surface-variant">
+                              {sectionCompleted}/{section.lessons.length} selesai
+                            </span>
+                          </div>
+                          <ChevronDown
+                            className={`w-4 h-4 text-on-surface-variant shrink-0 ml-2 transition-transform duration-300 ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
+                          />
                         </button>
-                      ))}
+
+                        {/* Lessons List */}
+                        {isExpanded && (
+                          <div className="border-t border-outline-variant/10">
+                            {section.lessons.map((lesson) => {
+                              const isActive = activeLesson?.id === lesson.id;
+                              const isCompleted = completedLessons.has(lesson.id);
+
+                              return (
+                                <button
+                                  key={lesson.id}
+                                  className={`w-full py-3 px-4 flex items-center gap-3 text-left text-sm transition-colors ${
+                                    isActive
+                                      ? "bg-[#003d9b]/5 text-[#003d9b] border-l-2 border-[#003d9b]"
+                                      : "hover:bg-surface-container-low text-on-surface-variant"
+                                  }`}
+                                  onClick={() => setActiveLesson(lesson)}
+                                >
+                                  {/* Status Icon */}
+                                  {isCompleted ? (
+                                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                                  ) : isActive ? (
+                                    <PlayCircle className="w-4 h-4 text-[#003d9b] shrink-0" />
+                                  ) : (
+                                    <Circle className="w-4 h-4 text-outline-variant shrink-0" />
+                                  )}
+
+                                  <span className={`flex-1 line-clamp-1 ${isActive ? "font-semibold" : ""}`}>
+                                    {lesson.title}
+                                  </span>
+
+                                  {lesson.duration_minutes && (
+                                    <span className="text-xs text-on-surface-variant shrink-0">
+                                      {lesson.duration_minutes}m
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Progress Summary Card */}
+              <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/15 p-6 space-y-4">
+                <h4 className="font-headline font-bold text-sm text-[#003d9b]">Progress Kursus</h4>
+                <div className="flex items-center gap-4">
+                  <div className="relative w-16 h-16">
+                    <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                      <circle cx="32" cy="32" r="28" fill="none" stroke="#e7e7f2" strokeWidth="6" />
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        fill="none"
+                        stroke="#003d9b"
+                        strokeWidth="6"
+                        strokeLinecap="round"
+                        strokeDasharray={`${overallProgress * 1.76} 176`}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-sm font-bold text-[#003d9b]">{overallProgress}%</span>
                     </div>
-                  )}
-                </Card>
-              ))
-            )}
-          </div>
+                  </div>
+                  <div className="flex-1 space-y-1.5">
+                    <div className="flex justify-between text-xs text-on-surface-variant">
+                      <span>Selesai</span>
+                      <span className="font-bold text-on-surface">{completedLessons.size}</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-on-surface-variant">
+                      <span>Tersisa</span>
+                      <span className="font-bold text-on-surface">{totalLessons - completedLessons.size}</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-on-surface-variant">
+                      <span>Total</span>
+                      <span className="font-bold text-on-surface">{totalLessons}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </DashboardLayout>
