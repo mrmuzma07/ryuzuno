@@ -3,8 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -45,54 +44,102 @@ const Catalog = () => {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-surface">
       <Navbar />
-      <div className="container mx-auto px-4 py-10">
-        <h1 className="font-heading text-3xl md:text-4xl font-bold mb-2">Explore Kursus 🎓</h1>
-        <p className="text-muted-foreground mb-8">Temukan kursus yang sesuai dengan minat dan tujuanmu</p>
 
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Cari kursus..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 rounded-xl" />
+      {/* Page header */}
+      <section className="bg-surface-container-low py-16 px-8 border-b border-outline-variant/10">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-on-background mb-4">Explore Kursus</h1>
+          <p className="text-on-surface-variant text-lg mb-8 max-w-xl">Temukan kursus yang sesuai dengan minat dan tujuanmu</p>
+
+          {/* Search bar */}
+          <div className="relative max-w-lg">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input
+              placeholder="Cari kursus..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-surface-container-lowest rounded-full border border-outline-variant/20 focus:border-[#003d9b] focus:ring-0 focus:outline-none text-on-surface placeholder-outline text-sm"
+            />
           </div>
         </div>
+      </section>
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          <span className="text-sm font-semibold text-muted-foreground mr-2">Kategori:</span>
-          <Badge variant={selectedCategory === null ? "default" : "outline"} className="cursor-pointer rounded-xl" onClick={() => setSelectedCategory(null)}>Semua</Badge>
+      <div className="max-w-7xl mx-auto px-8 py-12">
+        {/* Category filters */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <span className="text-sm font-bold text-on-surface-variant mr-2 self-center">Kategori:</span>
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
+              selectedCategory === null
+                ? "bg-[#003d9b] text-white"
+                : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
+            }`}
+          >
+            Semua
+          </button>
           {categories.map((cat: any) => (
-            <Badge key={cat.id} variant={selectedCategory === cat.name ? "default" : "outline"} className="cursor-pointer rounded-xl" onClick={() => setSelectedCategory(cat.name === selectedCategory ? null : cat.name)}>
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.name === selectedCategory ? null : cat.name)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
+                selectedCategory === cat.name
+                  ? "bg-[#003d9b] text-white"
+                  : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
+              }`}
+            >
               {cat.icon} {cat.name}
-            </Badge>
+            </button>
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8">
-          <span className="text-sm font-semibold text-muted-foreground mr-2">Level:</span>
+        {/* Level filters */}
+        <div className="flex flex-wrap gap-2 mb-10">
+          <span className="text-sm font-bold text-on-surface-variant mr-2 self-center">Level:</span>
           {levels.map((lvl) => (
-            <Badge key={lvl} variant={selectedLevel === lvl ? "default" : "outline"} className="cursor-pointer rounded-xl capitalize" onClick={() => setSelectedLevel(lvl === selectedLevel ? null : lvl)}>
+            <button
+              key={lvl}
+              onClick={() => setSelectedLevel(lvl === selectedLevel ? null : lvl)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors capitalize ${
+                selectedLevel === lvl
+                  ? "bg-tertiary text-white"
+                  : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
+              }`}
+            >
               {lvl}
-            </Badge>
+            </button>
           ))}
         </div>
 
-        <p className="text-sm text-muted-foreground mb-6">{filtered.length} kursus ditemukan</p>
+        <p className="text-sm text-on-surface-variant mb-8">{filtered.length} kursus ditemukan</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((course: any) => (
-            <CourseCard key={course.id} id={course.id} title={course.title} price={course.price} rating={course.rating} level={course.level} category_name={course.category_name} total_students={course.total_students} thumbnail_url={course.thumbnail_url} />
+            <CourseCard
+              key={course.id}
+              id={course.id}
+              title={course.title}
+              price={course.price}
+              rating={course.rating}
+              level={course.level}
+              category_name={course.category_name}
+              total_students={course.total_students}
+              thumbnail_url={course.thumbnail_url}
+            />
           ))}
         </div>
 
         {filtered.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-4xl mb-4">🔍</p>
-            <p className="font-heading font-bold text-xl">Tidak ada kursus ditemukan</p>
-            <p className="text-muted-foreground mt-2">Coba ubah filter atau kata kunci pencarian</p>
+            <BookOpen className="w-12 h-12 mx-auto mb-4 text-on-surface-variant/30" />
+            <h2 className="font-headline font-bold text-xl text-on-surface mb-2">Tidak ada kursus ditemukan</h2>
+            <p className="text-on-surface-variant">Coba ubah filter atau kata kunci pencarian</p>
           </div>
         )}
       </div>
+
       <Footer />
     </div>
   );

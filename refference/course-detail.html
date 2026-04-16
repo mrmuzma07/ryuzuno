@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Claude for Developers: LLM Engineering | Modern Campus</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary-fixed": "#dae2ff",
+          "surface-container-low": "#f3f3fd",
+          "secondary": "#4c5d8d",
+          "surface-variant": "#e1e2ec",
+          "on-primary-fixed-variant": "#0040a2",
+          "surface-tint": "#0c56d0",
+          "on-tertiary-container": "#ffc89e",
+          "on-tertiary-fixed": "#2f1500",
+          "on-primary-container": "#c4d2ff",
+          "on-secondary-container": "#415382",
+          "surface-container-high": "#e7e7f2",
+          "secondary-fixed-dim": "#b4c5fb",
+          "on-background": "#191b23",
+          "tertiary-fixed-dim": "#ffb77d",
+          "secondary-fixed": "#dae2ff",
+          "on-secondary": "#ffffff",
+          "on-surface": "#191b23",
+          "surface": "#faf8ff",
+          "on-tertiary-fixed-variant": "#6e3900",
+          "on-error": "#ffffff",
+          "outline": "#737685",
+          "on-tertiary": "#ffffff",
+          "tertiary-fixed": "#ffdcc3",
+          "inverse-surface": "#2e3038",
+          "inverse-on-surface": "#f0f0fb",
+          "on-primary-fixed": "#001848",
+          "primary-container": "#0052cc",
+          "on-surface-variant": "#434654",
+          "error-container": "#ffdad6",
+          "surface-container-highest": "#e1e2ec",
+          "on-secondary-fixed-variant": "#344573",
+          "surface-container": "#ededf8",
+          "surface-bright": "#faf8ff",
+          "inverse-primary": "#b2c5ff",
+          "primary": "#003d9b",
+          "tertiary": "#693600",
+          "surface-dim": "#d9d9e4",
+          "outline-variant": "#c3c6d6",
+          "primary-fixed-dim": "#b2c5ff",
+          "secondary-container": "#b6c8fe",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary-fixed": "#021948",
+          "tertiary-container": "#8b4a00",
+          "on-primary": "#ffffff",
+          "error": "#ba1a1a",
+          "on-error-container": "#93000a",
+          "background": "#faf8ff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "fontFamily": {
+          "headline": ["Manrope"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+  .hero-gradient { background: linear-gradient(135deg, #003d9b 0%, #0052cc 100%); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+  .accordion-content.open { max-height: 600px; }
+  .accordion-chevron { transition: transform 0.3s ease; }
+  .accordion-chevron.rotated { transform: rotate(180deg); }
+</style>
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- TopNavBar -->
+<header class="bg-white/80 backdrop-blur-md shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-8 py-4">
+    <div class="flex items-center gap-8">
+      <a href="index.html" class="text-2xl font-extrabold text-blue-900 font-headline tracking-tight">Modern Campus</a>
+      <nav class="hidden md:flex gap-6">
+        <a class="text-slate-500 hover:text-blue-600 transition-colors font-headline font-bold tracking-tight" href="index.html">AI</a>
+        <a class="text-blue-700 border-b-2 border-blue-700 pb-1 font-headline font-bold tracking-tight" href="course-catalog.html">Developer</a>
+        <a class="text-slate-500 hover:text-blue-600 transition-colors font-headline font-bold tracking-tight" href="#">Mobile</a>
+        <a class="text-slate-500 hover:text-blue-600 transition-colors font-headline font-bold tracking-tight" href="#">Design</a>
+        <a class="text-slate-500 hover:text-blue-600 transition-colors font-headline font-bold tracking-tight" href="#">DevOps</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="p-2 text-slate-500 hover:text-blue-600 transition-colors">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="p-2 text-slate-500 hover:text-blue-600 transition-colors">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </button>
+      <img alt="User profile" class="w-10 h-10 rounded-full border-2 border-surface-container-high" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1Rm4bUbKU-0oq26mLPknuN2AzBHnqHzSf3fu1yGV9wxGv9J9ovE26dlfNB0a_lGCs5aS9rSImUmV35izShsakI2R84oNAw4s6qNox3YUwD02AMcACbGed2fNsTT-Y1vnsWBwZtNC-mllQsYfu_c2q4fgjrk2AspYm0RLI728s5Ta4x06840hjlDTUWfULET85tyIwyKknd7EOfUTuBY83efRpAYIkBSaVwKOMldcdjwl517lOVpg6C_B2YzHlG-1yK9cQtQI5Fnd2"/>
+    </div>
+  </div>
+</header>
+
+<main class="relative">
+  <!-- Hero Section -->
+  <section class="hero-gradient text-white pt-16 pb-24 md:pb-32 px-8 overflow-hidden relative">
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <div class="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-[-50px] left-[-20px] w-96 h-96 bg-tertiary rounded-full blur-3xl"></div>
+    </div>
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+      <div class="lg:col-span-7">
+        <nav class="flex items-center gap-2 mb-6 text-sm text-blue-200">
+          <a href="course-catalog.html" class="hover:text-white transition-colors">Courses</a>
+          <span class="material-symbols-outlined text-xs">chevron_right</span>
+          <span>Development</span>
+          <span class="material-symbols-outlined text-xs">chevron_right</span>
+          <span class="text-white">AI Engineering</span>
+        </nav>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold font-headline mb-6 leading-tight">Claude for Developers: LLM Engineering</h1>
+        <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl leading-relaxed">Master the art of building production-grade applications with Anthropic's Claude. From prompt design to complex RAG architectures and autonomous agent loops.</p>
+        <div class="flex flex-wrap items-center gap-6 mb-8">
+          <div class="flex items-center gap-2">
+            <span class="text-tertiary-fixed font-bold text-xl">4.9</span>
+            <div class="flex text-tertiary-fixed">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+            </div>
+            <span class="text-blue-200 text-sm">(12,450 students)</span>
+          </div>
+          <div class="h-4 w-px bg-white/20 hidden md:block"></div>
+          <div class="flex items-center gap-2 text-sm text-blue-100">
+            <span class="material-symbols-outlined">update</span>
+            <span>Last updated May 2024</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-blue-100">
+            <span class="material-symbols-outlined">language</span>
+            <span>English [CC]</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-4">
+          <a href="enrollment.html" class="px-8 py-4 bg-tertiary text-white font-bold rounded-lg hover:bg-tertiary-container transition-all flex items-center gap-2 shadow-lg shadow-tertiary/20">
+            Enroll Now <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+          <button class="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-lg border border-white/20 hover:bg-white/20 transition-all">
+            Watch Preview
+          </button>
+        </div>
+      </div>
+      <!-- Hero Image -->
+      <div class="lg:col-span-5 hidden lg:block">
+        <div class="rounded-2xl overflow-hidden shadow-2xl relative group">
+          <img alt="Claude AI Interface" class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJo4mmvAekVotVCmgt0FNFD2HkVXU54Gq5g6B-h8fetFRFBv3Hz5kqfYUl-MRGCvM5Y2o37VGi8cwLFgoNKtQmO4CBlqZu9fNZiQohM4PQgI5P_3vy0BkGpTaS8RqfLNUjlCWrGrbQnsECxa15y1JuO61wXgRjU6povGJO8_Thph7JXPNiBYAKqMyZexpyl87d2SPquboqug-VL3HsjdWWhqpbgZtjCQzh22lvKFtLCHoc7rXAbVsaP4jJftulMqit2BI2JEELFSls"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center">
+            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-primary cursor-pointer hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content Layout -->
+  <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 -mt-12 md:-mt-16">
+    <!-- Left Column -->
+    <div class="lg:col-span-8 space-y-12 mb-20">
+
+      <!-- Sticky Tabs -->
+      <div class="sticky top-20 z-40 bg-white/90 backdrop-blur-md rounded-xl shadow-sm px-2 py-2 flex items-center justify-between border border-outline-variant/10">
+        <div class="flex items-center gap-2 w-full overflow-x-auto no-scrollbar">
+          <a class="flex items-center gap-3 bg-surface-container-low text-blue-700 rounded-lg p-3 shadow-sm text-sm whitespace-nowrap" href="#overview">
+            <span class="material-symbols-outlined">info</span> Overview
+          </a>
+          <a class="flex items-center gap-3 text-slate-600 hover:bg-slate-200/50 p-3 rounded-lg transition-all text-sm whitespace-nowrap" href="#curriculum">
+            <span class="material-symbols-outlined">menu_book</span> Curriculum
+          </a>
+          <a class="flex items-center gap-3 text-slate-600 hover:bg-slate-200/50 p-3 rounded-lg transition-all text-sm whitespace-nowrap" href="#instructor">
+            <span class="material-symbols-outlined">person</span> Instructor
+          </a>
+          <a class="flex items-center gap-3 text-slate-600 hover:bg-slate-200/50 p-3 rounded-lg transition-all text-sm whitespace-nowrap" href="#reviews">
+            <span class="material-symbols-outlined">star</span> Reviews
+          </a>
+        </div>
+      </div>
+
+      <!-- Course Overview -->
+      <section class="bg-surface-container-lowest p-10 rounded-2xl border border-outline-variant/15" id="overview">
+        <h2 class="text-3xl font-bold font-headline mb-8 text-blue-900">Course Overview</h2>
+        <div class="prose prose-slate max-w-none text-on-surface-variant leading-relaxed space-y-4 mb-10">
+          <p>Anthropics' Claude 3 family represents a paradigm shift in Large Language Model engineering. This comprehensive developer-focused course bridges the gap between basic prompting and sophisticated LLM architecture. You'll learn to leverage Claude's unique 200k context window, XML-based structured output, and state-of-the-art vision capabilities.</p>
+          <p>Through 12 hands-on projects, we'll build everything from automated code review bots to complex multi-step RAG pipelines that can ingest entire documentation libraries at once.</p>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-6 text-blue-900">Key Learning Outcomes</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-surface-container-low p-6 rounded-xl flex gap-4 transition-transform hover:-translate-y-1">
+            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined">psychology</span>
+            </div>
+            <div>
+              <h4 class="font-bold text-on-surface mb-1">Advanced Prompting</h4>
+              <p class="text-sm text-on-surface-variant">Master XML tagging, chain-of-thought, and prompt versioning techniques.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-xl flex gap-4 transition-transform hover:-translate-y-1">
+            <div class="w-12 h-12 bg-tertiary/10 rounded-lg flex items-center justify-center text-tertiary shrink-0">
+              <span class="material-symbols-outlined">database</span>
+            </div>
+            <div>
+              <h4 class="font-bold text-on-surface mb-1">RAG Architectures</h4>
+              <p class="text-sm text-on-surface-variant">Build vector databases and retrieval systems utilizing Claude's long context.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-xl flex gap-4 transition-transform hover:-translate-y-1">
+            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined">code</span>
+            </div>
+            <div>
+              <h4 class="font-bold text-on-surface mb-1">API Integration</h4>
+              <p class="text-sm text-on-surface-variant">Deploy high-performance Anthropic API hooks into Python and Node.js environments.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 rounded-xl flex gap-4 transition-transform hover:-translate-y-1">
+            <div class="w-12 h-12 bg-tertiary/10 rounded-lg flex items-center justify-center text-tertiary shrink-0">
+              <span class="material-symbols-outlined">smart_toy</span>
+            </div>
+            <div>
+              <h4 class="font-bold text-on-surface mb-1">Agentic Loops</h4>
+              <p class="text-sm text-on-surface-variant">Design autonomous agents capable of tool-use and multi-step reasoning.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Curriculum -->
+      <section class="space-y-6" id="curriculum">
+        <div class="flex justify-between items-end mb-4">
+          <h2 class="text-3xl font-bold font-headline text-blue-900">Curriculum</h2>
+          <span class="text-on-surface-variant text-sm font-medium">14 Modules • 128 Lessons • 18.5 Total Hours</span>
+        </div>
+        <div class="space-y-4" id="accordion-container">
+
+          <!-- Module 1 -->
+          <div class="bg-white rounded-xl border border-outline-variant/15 overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-6 text-left hover:bg-surface-container-low transition-colors" aria-expanded="true">
+              <div class="flex items-center gap-4">
+                <span class="text-xs font-bold text-tertiary uppercase tracking-wider bg-tertiary/5 px-2 py-1 rounded">Module 1</span>
+                <span class="text-lg font-bold text-blue-900">Prompt Engineering Foundations</span>
+              </div>
+              <div class="flex items-center gap-4 text-on-surface-variant">
+                <span class="text-sm">8 Lessons • 45m</span>
+                <span class="material-symbols-outlined accordion-chevron rotated">expand_more</span>
+              </div>
+            </button>
+            <div class="accordion-content open px-6 pb-6 pt-2 divide-y divide-outline-variant/10">
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Intro to Claude's Architecture</span>
+                </div>
+                <span class="text-xs text-slate-400">05:12</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">The Power of XML Tagging</span>
+                </div>
+                <span class="text-xs text-slate-400">12:45</span>
+              </a>
+              <div class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">description</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Project: Prompt Template Library</span>
+                </div>
+                <span class="text-xs text-slate-400">Reading</span>
+              </div>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Chain-of-Thought Prompting</span>
+                </div>
+                <span class="text-xs text-slate-400">08:33</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Prompt Versioning &amp; Testing</span>
+                </div>
+                <span class="text-xs text-slate-400">10:20</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Module 2 -->
+          <div class="bg-white rounded-xl border border-outline-variant/15 overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-6 text-left hover:bg-surface-container-low transition-colors" aria-expanded="false">
+              <div class="flex items-center gap-4">
+                <span class="text-xs font-bold text-tertiary uppercase tracking-wider bg-tertiary/5 px-2 py-1 rounded">Module 2</span>
+                <span class="text-lg font-bold text-blue-900">RAG Pipelines with 200k Context</span>
+              </div>
+              <div class="flex items-center gap-4 text-on-surface-variant">
+                <span class="text-sm">12 Lessons • 2h 15m</span>
+                <span class="material-symbols-outlined accordion-chevron">expand_more</span>
+              </div>
+            </button>
+            <div class="accordion-content px-6 divide-y divide-outline-variant/10">
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Introduction to RAG Architecture</span>
+                </div>
+                <span class="text-xs text-slate-400">14:22</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Building Vector Databases</span>
+                </div>
+                <span class="text-xs text-slate-400">22:10</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Leveraging the 200k Context Window</span>
+                </div>
+                <span class="text-xs text-slate-400">18:05</span>
+              </a>
+              <div class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">description</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Project: Document Q&amp;A System</span>
+                </div>
+                <span class="text-xs text-slate-400">Project</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 3 -->
+          <div class="bg-white rounded-xl border border-outline-variant/15 overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-6 text-left hover:bg-surface-container-low transition-colors" aria-expanded="false">
+              <div class="flex items-center gap-4">
+                <span class="text-xs font-bold text-tertiary uppercase tracking-wider bg-tertiary/5 px-2 py-1 rounded">Module 3</span>
+                <span class="text-lg font-bold text-blue-900">Advanced Tool Use &amp; Function Calling</span>
+              </div>
+              <div class="flex items-center gap-4 text-on-surface-variant">
+                <span class="text-sm">10 Lessons • 1h 50m</span>
+                <span class="material-symbols-outlined accordion-chevron">expand_more</span>
+              </div>
+            </button>
+            <div class="accordion-content px-6 divide-y divide-outline-variant/10">
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Tool Use Fundamentals</span>
+                </div>
+                <span class="text-xs text-slate-400">16:40</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Custom Function Definitions</span>
+                </div>
+                <span class="text-xs text-slate-400">19:15</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Agentic Loop Patterns</span>
+                </div>
+                <span class="text-xs text-slate-400">24:00</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Module 4-14 collapsed -->
+          <div class="bg-white rounded-xl border border-outline-variant/15 overflow-hidden">
+            <button class="accordion-trigger w-full flex items-center justify-between p-6 text-left hover:bg-surface-container-low transition-colors" aria-expanded="false">
+              <div class="flex items-center gap-4">
+                <span class="text-xs font-bold text-tertiary uppercase tracking-wider bg-tertiary/5 px-2 py-1 rounded">Module 4</span>
+                <span class="text-lg font-bold text-blue-900">Vision &amp; Multimodal Inputs</span>
+              </div>
+              <div class="flex items-center gap-4 text-on-surface-variant">
+                <span class="text-sm">9 Lessons • 1h 30m</span>
+                <span class="material-symbols-outlined accordion-chevron">expand_more</span>
+              </div>
+            </button>
+            <div class="accordion-content px-6 divide-y divide-outline-variant/10">
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Image Input Basics</span>
+                </div>
+                <span class="text-xs text-slate-400">11:20</span>
+              </a>
+              <a href="lesson.html" class="py-3 flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400">play_circle</span>
+                  <span class="text-on-surface-variant group-hover:text-primary transition-colors">Document Understanding with Vision</span>
+                </div>
+                <span class="text-xs text-slate-400">15:45</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Instructor -->
+      <section class="bg-surface-container-low p-10 rounded-2xl" id="instructor">
+        <h2 class="text-3xl font-bold font-headline mb-8 text-blue-900">Your Instructor</h2>
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+          <img alt="Dr. Elena Vance" class="w-32 h-32 md:w-48 md:h-48 rounded-2xl object-cover shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqnjZ66-mqZ_N_P09hSMtKIANphbI2EKB4QO-X-cquoRMvEgm-3mr7lxQbmRzlfOaPDgrW7-PH4syvSD7zuL-LyEYfrev9N6cQQx0BOgAnyb5s-fY8lkihXOwDHUY1mpEPvKLDO2y7HA4p5CeyVTngnhBks8oBxGKOHLu1_9GciEGS5Xwf2CD4pneg0Yi960BWYBpWanhj_LQ7pcn3xMYD4W4285ev_JqMCBk7oFrX-tLXZOJ-UtElSZQhU4vcMEw6KArgqoWAFdPw"/>
+          <div class="flex-1">
+            <h3 class="text-2xl font-bold text-blue-900 mb-1">Dr. Elena Vance</h3>
+            <p class="text-tertiary font-semibold mb-4">Lead AI Engineer &amp; Former Anthropic Research Fellow</p>
+            <div class="flex gap-4 mb-6 flex-wrap">
+              <div class="flex items-center gap-1 text-on-surface-variant text-sm">
+                <span class="material-symbols-outlined text-primary text-lg">star</span>
+                <span class="font-bold text-on-surface">4.9</span> Instructor Rating
+              </div>
+              <div class="flex items-center gap-1 text-on-surface-variant text-sm">
+                <span class="material-symbols-outlined text-primary text-lg">groups</span>
+                <span class="font-bold text-on-surface">85k</span> Students
+              </div>
+              <div class="flex items-center gap-1 text-on-surface-variant text-sm">
+                <span class="material-symbols-outlined text-primary text-lg">play_circle</span>
+                <span class="font-bold text-on-surface">14</span> Courses
+              </div>
+            </div>
+            <p class="text-on-surface-variant leading-relaxed">Dr. Vance has been at the forefront of LLM research for over a decade. Her work on constitutional AI and safety-first prompting has been widely adopted across the industry. She specializes in bridging theoretical AI concepts into practical, scalable engineering solutions for startups and enterprise teams.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section class="space-y-10" id="reviews">
+        <h2 class="text-3xl font-bold font-headline text-blue-900">Student Success</h2>
+        <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/15 flex flex-col md:flex-row gap-12 items-center">
+          <div class="text-center shrink-0">
+            <div class="text-6xl font-black text-blue-900 mb-2">4.9</div>
+            <div class="flex text-tertiary mb-2 justify-center">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+            </div>
+            <div class="text-sm font-bold text-on-surface-variant uppercase">Course Rating</div>
+          </div>
+          <div class="flex-1 w-full space-y-3">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-bold w-4">5</span>
+              <div class="flex-1 h-3 bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width: 85%"></div>
+              </div>
+              <span class="text-sm text-on-surface-variant">85%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-bold w-4">4</span>
+              <div class="flex-1 h-3 bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width: 12%"></div>
+              </div>
+              <span class="text-sm text-on-surface-variant">12%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-bold w-4">3</span>
+              <div class="flex-1 h-3 bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width: 2%"></div>
+              </div>
+              <span class="text-sm text-on-surface-variant">2%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-bold w-4">2</span>
+              <div class="flex-1 h-3 bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width: 1%"></div>
+              </div>
+              <span class="text-sm text-on-surface-variant">1%</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 bg-white rounded-2xl border border-outline-variant/15 space-y-4">
+            <div class="flex items-center gap-3">
+              <img alt="Marcus Thorne" class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW_Q3jzk_z1tN4TjQm9twlN5KyupTDsu67bfrxDrdEeXyFjwUSavYIs1n6SS6SkDN4aVRtorrCVfsMoxCkU1zUjNz67o7a7XpicHFnD2q4vQfIlco5RSP5RmKNnATRpGA91wrq5ZO9rqHkwFsw-cfbzY5R_BODy5SnUlOb4zov--cTj5VMjGMBCVe7J0PjU6JrhYmht_d-UMqkpHBBtydpE4RsANEnnzW3_40f0d4qgAcafKREAbEEUfniau2TvlgOHV9tgQND4JEq"/>
+              <div>
+                <h4 class="font-bold text-blue-900">Marcus Thorne</h4>
+                <p class="text-xs text-on-surface-variant">Sr. Engineer at TechStack</p>
+              </div>
+            </div>
+            <div class="flex text-tertiary text-sm">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+            </div>
+            <p class="text-sm text-on-surface-variant italic leading-relaxed">"The module on 200k context RAG changed my entire approach to documentation systems. The instructor is world-class."</p>
+          </div>
+          <div class="p-6 bg-white rounded-2xl border border-outline-variant/15 space-y-4">
+            <div class="flex items-center gap-3">
+              <img alt="Lina Schmidt" class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxRRQ5OTEEs-At09satI72uhUt4q7P5lgnOGs8ZSoKXP9BGbhau3qcGK1r-R_XUDjUgd3IfpibBmJT3r7hZ5sTTiYPspHEJcRzognRX-vsKbaZqBakcjIVHljP9YCGc9etHUZOM5yiWw7Hv2KRI9hIXxXaqLGW3Hg_PrVm8MpPz69-UxWEVU9bAzRRjbcAY-4sSzGNyeSscFpKtYim8k_ssOwJ97s7CnYfS239gOCQ9O6T2lDfUUdhshRObEcB0owDIOPD5-1vNenc"/>
+              <div>
+                <h4 class="font-bold text-blue-900">Lina Schmidt</h4>
+                <p class="text-xs text-on-surface-variant">AI Researcher</p>
+              </div>
+            </div>
+            <div class="flex text-tertiary text-sm">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+            </div>
+            <p class="text-sm text-on-surface-variant italic leading-relaxed">"Practical, technical, and zero fluff. If you want to actually build things with Claude, this is the course."</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="lg:col-span-4 relative">
+      <div class="sticky top-28 space-y-6">
+        <div class="bg-surface-container-lowest rounded-2xl shadow-xl shadow-blue-900/5 border border-outline-variant/20 overflow-hidden">
+          <div class="p-8">
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="text-4xl font-extrabold text-blue-900">$199.00</span>
+              <span class="text-on-surface-variant line-through">$499.00</span>
+              <span class="text-tertiary font-bold text-sm">60% OFF</span>
+            </div>
+            <a href="enrollment.html" class="block w-full py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all mb-4 shadow-lg shadow-primary/20 text-center">
+              Enroll Now
+            </a>
+            <button class="w-full py-4 bg-surface-container-high text-on-primary-fixed-variant font-bold rounded-lg hover:bg-surface-container-highest transition-all mb-8">
+              Add to Wishlist
+            </button>
+            <div class="space-y-4">
+              <h4 class="font-bold text-blue-900">What's Included</h4>
+              <ul class="space-y-3">
+                <li class="flex items-center gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary">all_inclusive</span> Lifetime access to course materials
+                </li>
+                <li class="flex items-center gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary">workspace_premium</span> Verified Certificate of Completion
+                </li>
+                <li class="flex items-center gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary">terminal</span> 12 Industry-standard projects
+                </li>
+                <li class="flex items-center gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary">groups</span> Access to exclusive Discord community
+                </li>
+                <li class="flex items-center gap-3 text-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-primary">phone_iphone</span> Available on iOS and Android
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="bg-surface-container-low p-6 border-t border-outline-variant/10">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-blue-900">For Teams?</span>
+              <a class="text-xs font-bold text-primary hover:underline" href="#">View Business Plans</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Nav -->
+        <div class="bg-slate-50 flex flex-col h-auto p-4 gap-2 rounded-2xl border border-outline-variant/10">
+          <div class="flex items-center gap-4 mb-4 p-2">
+            <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">menu_book</span>
+            </div>
+            <div>
+              <h5 class="font-headline font-bold text-blue-900 text-sm">Course Details</h5>
+              <p class="text-xs text-on-surface-variant">Full-Stack Developer Path</p>
+            </div>
+          </div>
+          <a class="flex items-center gap-3 bg-white text-blue-700 rounded-lg p-3 shadow-sm text-sm" href="#overview">
+            <span class="material-symbols-outlined">info</span> Overview
+          </a>
+          <a class="flex items-center gap-3 text-slate-600 p-3 hover:bg-slate-200/50 transition-all text-sm" href="#curriculum">
+            <span class="material-symbols-outlined">menu_book</span> Curriculum
+          </a>
+          <a class="flex items-center gap-3 text-slate-600 p-3 hover:bg-slate-200/50 transition-all text-sm" href="#instructor">
+            <span class="material-symbols-outlined">person</span> Instructor
+          </a>
+          <a class="flex items-center gap-3 text-slate-600 p-3 hover:bg-slate-200/50 transition-all text-sm" href="#reviews">
+            <span class="material-symbols-outlined">star</span> Reviews
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-slate-100 py-12">
+  <div class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto gap-8">
+    <div class="flex flex-col items-center md:items-start gap-4">
+      <span class="text-lg font-black text-blue-900 uppercase tracking-widest font-headline">Modern Campus</span>
+      <p class="text-slate-400 text-xs uppercase tracking-widest text-center md:text-left">© 2024 Modern Campus. Editorial Learning Experience.</p>
+    </div>
+    <nav class="flex gap-8">
+      <a class="text-slate-400 hover:text-orange-500 transition-colors text-xs uppercase tracking-widest" href="#">Privacy</a>
+      <a class="text-slate-400 hover:text-orange-500 transition-colors text-xs uppercase tracking-widest" href="#">Terms</a>
+      <a class="text-slate-400 hover:text-orange-500 transition-colors text-xs uppercase tracking-widest" href="#">Support</a>
+      <a class="text-slate-400 hover:text-orange-500 transition-colors text-xs uppercase tracking-widest" href="#">Careers</a>
+    </nav>
+    <div class="flex gap-4">
+      <span class="material-symbols-outlined text-slate-400">language</span>
+      <span class="material-symbols-outlined text-slate-400">chat</span>
+      <span class="material-symbols-outlined text-slate-400">share</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Accordion functionality
+  document.querySelectorAll('.accordion-trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      const chevron = btn.querySelector('.accordion-chevron');
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      content.classList.toggle('open', !isOpen);
+      chevron.classList.toggle('rotated', !isOpen);
+    });
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>

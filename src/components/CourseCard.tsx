@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Star, Users, Clock, BookOpen } from "lucide-react";
+import { Users, Clock, BookOpen } from "lucide-react";
 import { formatPrice } from "@/lib/utils-format";
 
 interface CourseCardProps {
@@ -23,68 +21,109 @@ interface CourseCardProps {
 }
 
 const levelColors: Record<string, string> = {
-  beginner: "bg-fun-green/10 text-fun-green",
-  intermediate: "bg-fun-blue/10 text-fun-blue",
-  advanced: "bg-fun-pink/10 text-fun-pink",
-  Beginner: "bg-fun-green/10 text-fun-green",
-  Intermediate: "bg-fun-blue/10 text-fun-blue",
-  Advanced: "bg-fun-pink/10 text-fun-pink",
+  beginner: "text-[#003d9b]",
+  intermediate: "text-[#4c5d8d]",
+  advanced: "text-[#693600]",
+  Beginner: "text-[#003d9b]",
+  Intermediate: "text-[#4c5d8d]",
+  Advanced: "text-[#693600]",
 };
 
-const badgeColors: Record<string, string> = {
-  "Best Seller": "bg-fun-orange text-white",
-  "Top Rated": "bg-fun-yellow text-foreground",
-  "Hot": "bg-destructive text-destructive-foreground",
-  "New": "bg-fun-green text-white",
-};
-
-const CourseCard = ({ id, title, instructor, price, rating, reviewCount, studentCount, total_students, level, category, category_name, duration, lessonCount, badges = [], thumbnail_url }: CourseCardProps) => {
+const CourseCard = ({
+  id, title, instructor, price, rating, reviewCount,
+  studentCount, total_students, level, category, category_name,
+  duration, lessonCount, badges = [], thumbnail_url,
+}: CourseCardProps) => {
   const students = studentCount || total_students || 0;
   const cat = category || category_name || "";
-  
+
   return (
-    <Link to={`/course/${id}`}>
-      <Card className="group overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-2 border-transparent hover:border-primary/20">
-        <div className="aspect-video bg-gradient-to-br from-primary/20 via-fun-blue/20 to-fun-pink/20 relative overflow-hidden">
-          {thumbnail_url ? (
-            <img src={thumbnail_url} alt={title} className="absolute inset-0 w-full h-full object-cover" />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <BookOpen className="w-12 h-12 text-primary/40 group-hover:scale-110 transition-transform" />
-            </div>
+    <Link
+      to={`/course/${id}`}
+      className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-outline-variant/5 block"
+    >
+      {/* Thumbnail */}
+      <div className="h-48 overflow-hidden relative">
+        {thumbnail_url ? (
+          <img
+            src={thumbnail_url}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+            <BookOpen className="w-12 h-12 text-on-surface-variant/30 group-hover:scale-110 transition-transform" />
+          </div>
+        )}
+        {/* Category + badges overlay */}
+        <div className="absolute top-4 left-4 flex gap-2">
+          {cat && (
+            <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-[#003d9b]">
+              {cat.toUpperCase()}
+            </span>
           )}
-          {badges.length > 0 && (
-            <div className="absolute top-3 left-3 flex gap-1.5">
-              {badges.map((b) => (
-                <span key={b} className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeColors[b] || "bg-muted text-foreground"}`}>{b}</span>
-              ))}
+          {badges.map((b) => (
+            <span key={b} className="bg-tertiary text-white px-2 py-0.5 rounded-full text-[10px] font-bold">
+              {b}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        {/* Meta row */}
+        <div className="flex justify-between items-center mb-3">
+          <span className={`text-xs font-bold uppercase tracking-widest ${levelColors[level] || "text-on-surface-variant"}`}>
+            {lessonCount != null ? `${lessonCount} Lessons` : level}
+          </span>
+          {rating != null && (
+            <div className="flex items-center gap-1">
+              <span
+                className="material-symbols-outlined text-tertiary text-sm"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                star
+              </span>
+              <span className="text-xs font-bold text-on-surface">{rating}</span>
+              {reviewCount != null && (
+                <span className="text-xs text-on-surface-variant">({reviewCount})</span>
+              )}
             </div>
           )}
         </div>
-        <div className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className={`text-[10px] font-bold ${levelColors[level] || ""}`}>{level}</Badge>
-            <span className="text-[11px] text-muted-foreground">{cat}</span>
-          </div>
-          <h3 className="font-heading font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
-          {instructor && <p className="text-xs text-muted-foreground">{instructor}</p>}
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            {rating != null && (
-              <span className="flex items-center gap-1"><Star className="w-3 h-3 fill-fun-yellow text-fun-yellow" /><strong className="text-foreground">{rating}</strong>{reviewCount != null && ` (${reviewCount})`}</span>
+
+        {/* Title */}
+        <h3 className="text-lg font-bold mb-2 group-hover:text-[#003d9b] transition-colors leading-snug line-clamp-2 font-headline text-on-surface">
+          {title}
+        </h3>
+
+        {instructor && <p className="text-sm text-on-surface-variant mb-4">{instructor}</p>}
+
+        {/* Stats */}
+        {(duration || students > 0) && (
+          <div className="flex items-center gap-4 text-xs text-on-surface-variant mb-4">
+            {duration && (
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {duration}
+              </span>
             )}
-            <span className="flex items-center gap-1"><Users className="w-3 h-3" />{students.toLocaleString()}</span>
+            {students > 0 && (
+              <span className="flex items-center gap-1">
+                <Users className="w-3 h-3" />
+                {students.toLocaleString()}
+              </span>
+            )}
           </div>
-          {(duration || lessonCount) && (
-            <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-              {duration && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{duration}</span>}
-              {lessonCount != null && <span>{lessonCount} lessons</span>}
-            </div>
-          )}
-          <div className="pt-1 border-t">
-            <span className="font-heading font-bold text-lg text-primary">{formatPrice(price)}</span>
-          </div>
+        )}
+
+        {/* Footer */}
+        <div className="pt-4 border-t border-outline-variant/10 flex justify-between items-center">
+          <span className="font-headline font-bold text-lg text-[#003d9b]">{formatPrice(price)}</span>
+          <span className="text-[#003d9b] font-bold text-sm">Enroll Now</span>
         </div>
-      </Card>
+      </div>
     </Link>
   );
 };

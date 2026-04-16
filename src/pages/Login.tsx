@@ -48,41 +48,60 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative">
-      <div className="absolute inset-0 gradient-fun opacity-5" />
-      <div className="absolute top-20 right-20 w-60 h-60 bg-fun-purple/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-20 w-48 h-48 bg-fun-pink/10 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-surface flex items-center justify-center p-4 relative">
+      {/* Ambient glows */}
+      <div className="absolute top-20 right-20 w-72 h-72 bg-[#003d9b]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 left-20 w-56 h-56 bg-[#693600]/5 rounded-full blur-3xl pointer-events-none" />
 
-      <Card className="w-full max-w-md p-8 space-y-6 relative">
-        <div className="text-center">
-          <Link to="/" className="inline-flex items-center gap-2 font-heading font-bold text-2xl mb-2">
-            <span className="gradient-primary text-primary-foreground w-10 h-10 rounded-xl flex items-center justify-center">
-              <BookOpen className="w-5 h-5" />
-            </span>
-            <span className="text-gradient-primary">RyuZuno</span>
+      <div className="w-full max-w-md">
+        {/* Header strip */}
+        <div className="signature-gradient rounded-t-2xl p-8 text-center">
+          <Link to="/" className="text-2xl font-extrabold text-white font-headline tracking-tight">
+            RyuZuno
           </Link>
-          <p className="text-muted-foreground text-sm mt-2">Selamat datang kembali! 👋</p>
+          <p className="text-on-primary-container text-sm mt-2">Selamat datang kembali</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 rounded-xl h-12" required />
-          </div>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 rounded-xl h-12" required />
-          </div>
-          <Button type="submit" className="w-full h-12 rounded-xl gradient-primary border-0 font-bold text-base" disabled={loading}>
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Masuk"}
-          </Button>
-        </form>
+        {/* Form card */}
+        <div className="bg-surface-container-lowest rounded-b-2xl p-8 shadow-xl shadow-[#003d9b]/5 border border-outline-variant/10">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+              <Input
+                placeholder="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="pl-10 rounded-lg h-12 bg-surface-container-lowest border-outline-variant/30 focus:border-[#003d9b] focus:ring-0"
+                required
+              />
+            </div>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+              <Input
+                placeholder="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="pl-10 rounded-lg h-12 bg-surface-container-lowest border-outline-variant/30 focus:border-[#003d9b] focus:ring-0"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 rounded-lg signature-gradient text-white font-bold text-base hover:opacity-90 transition-all shadow-md shadow-[#003d9b]/20 disabled:opacity-60 flex items-center justify-center"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Masuk"}
+            </button>
+          </form>
 
-        <p className="text-center text-sm text-muted-foreground">
-          Belum punya akun?{" "}
-          <Link to="/register" className="text-primary font-semibold hover:underline">Daftar Gratis</Link>
-        </p>
-      </Card>
+          <p className="text-center text-sm text-on-surface-variant mt-6">
+            Belum punya akun?{" "}
+            <Link to="/register" className="text-[#003d9b] font-bold hover:underline">Daftar Gratis</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

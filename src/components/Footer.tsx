@@ -1,44 +1,27 @@
 import { Link } from "react-router-dom";
-import { BookOpen } from "lucide-react";
 
 const Footer = () => (
-  <footer className="bg-foreground text-background/80 py-12 mt-20">
-    <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div>
-          <Link to="/" className="flex items-center gap-2 font-heading font-bold text-xl text-background mb-4">
-            <BookOpen className="w-5 h-5" />
-            RyuZuno
-          </Link>
-          <p className="text-sm opacity-70">Platform e-learning gamified terbaik untuk meningkatkan skill kamu! 🚀</p>
-        </div>
-        <div>
-          <h4 className="font-heading font-bold text-background mb-3">Explore</h4>
-          <div className="space-y-2 text-sm">
-            <Link to="/catalog" className="block hover:text-background transition-colors">Semua Kursus</Link>
-            <Link to="/learning-paths" className="block hover:text-background transition-colors">Learning Paths</Link>
-            <Link to="/leaderboard" className="block hover:text-background transition-colors">Leaderboard</Link>
-          </div>
-        </div>
-        <div>
-          <h4 className="font-heading font-bold text-background mb-3">Perusahaan</h4>
-          <div className="space-y-2 text-sm">
-            <a href="#" className="block hover:text-background transition-colors">Tentang Kami</a>
-            <a href="#" className="block hover:text-background transition-colors">Karir</a>
-            <a href="#" className="block hover:text-background transition-colors">Blog</a>
-          </div>
-        </div>
-        <div>
-          <h4 className="font-heading font-bold text-background mb-3">Support</h4>
-          <div className="space-y-2 text-sm">
-            <a href="#" className="block hover:text-background transition-colors">FAQ</a>
-            <a href="#" className="block hover:text-background transition-colors">Kontak</a>
-            <a href="#" className="block hover:text-background transition-colors">Privacy Policy</a>
-          </div>
-        </div>
+  <footer className="bg-white border-t border-outline-variant/10 py-12 mt-0">
+    <div className="flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto gap-8">
+      {/* Brand */}
+      <div className="flex flex-col items-center md:items-start gap-2">
+        <span className="text-lg font-black text-[#003d9b] uppercase tracking-widest font-headline">RyuZuno</span>
+        <p className="text-on-surface-variant text-[10px] uppercase tracking-widest text-center md:text-left">Editorial Learning Experience</p>
       </div>
-      <div className="border-t border-background/10 mt-8 pt-8 text-center text-sm opacity-60">
-        © 2026 RyuZuno. All rights reserved. Made with ❤️
+
+      {/* Links */}
+      <nav className="flex flex-wrap justify-center gap-8">
+        <Link to="/catalog" className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-tertiary transition-colors">Kursus</Link>
+        <Link to="/learning-paths" className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-tertiary transition-colors">Learning Paths</Link>
+        <Link to="/leaderboard" className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-tertiary transition-colors">Leaderboard</Link>
+        <a href="#" className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-tertiary transition-colors">Privacy</a>
+        <a href="#" className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-tertiary transition-colors">Terms</a>
+        <a href="#" className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-tertiary transition-colors">Support</a>
+      </nav>
+
+      {/* Copyright */}
+      <div className="text-on-surface-variant text-xs uppercase tracking-widest">
+        © 2026 RyuZuno.
       </div>
     </div>
   </footer>

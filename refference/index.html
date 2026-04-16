@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modern Campus | Master the Future of Tech</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-background": "#191b23",
+          "on-tertiary-container": "#ffc89e",
+          "primary": "#003d9b",
+          "error-container": "#ffdad6",
+          "tertiary-fixed-dim": "#ffb77d",
+          "surface-tint": "#0c56d0",
+          "on-primary-container": "#c4d2ff",
+          "secondary-fixed": "#dae2ff",
+          "primary-fixed-dim": "#b2c5ff",
+          "secondary": "#4c5d8d",
+          "error": "#ba1a1a",
+          "surface-variant": "#e1e2ec",
+          "inverse-surface": "#2e3038",
+          "on-secondary": "#ffffff",
+          "on-surface": "#191b23",
+          "surface-container-low": "#f3f3fd",
+          "surface-container": "#ededf8",
+          "on-error": "#ffffff",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary-container": "#415382",
+          "surface-container-high": "#e7e7f2",
+          "surface-container-highest": "#e1e2ec",
+          "inverse-primary": "#b2c5ff",
+          "surface": "#faf8ff",
+          "on-tertiary": "#ffffff",
+          "on-primary-fixed": "#001848",
+          "on-surface-variant": "#434654",
+          "on-tertiary-fixed-variant": "#6e3900",
+          "background": "#faf8ff",
+          "outline-variant": "#c3c6d6",
+          "outline": "#737685",
+          "on-primary-fixed-variant": "#0040a2",
+          "tertiary-container": "#8b4a00",
+          "on-secondary-fixed-variant": "#344573",
+          "on-error-container": "#93000a",
+          "surface-dim": "#d9d9e4",
+          "surface-bright": "#faf8ff",
+          "on-secondary-fixed": "#021945",
+          "inverse-on-surface": "#f0f0fb",
+          "tertiary-fixed": "#ffdcc3",
+          "primary-fixed": "#dae2ff",
+          "on-tertiary-fixed": "#2f1500",
+          "primary-container": "#0052cc",
+          "secondary-fixed-dim": "#b4c5fb",
+          "on-primary": "#ffffff",
+          "tertiary": "#693600",
+          "secondary-container": "#b6c8fe"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.5rem",
+          "lg": "1rem",
+          "xl": "1.5rem",
+          "full": "9999px"
+        },
+        "fontFamily": {
+          "headline": ["Manrope"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .signature-gradient { background: linear-gradient(135deg, #003d9b 0%, #0052cc 100%); }
+  body { font-family: 'Inter', sans-serif; background-color: #faf8ff; color: #191b23; }
+  h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+</style>
+</head>
+<body class="bg-surface text-on-surface">
+
+<!-- TopNavBar -->
+<nav class="bg-white/80 backdrop-blur-md shadow-sm top-0 sticky z-50 flex justify-between items-center w-full px-8 py-4">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="text-2xl font-extrabold text-blue-900 font-headline tracking-tight">Modern Campus</a>
+    <div class="hidden md:flex gap-6 items-center">
+      <a class="font-headline font-bold tracking-tight text-blue-700 border-b-2 border-blue-700 pb-1 hover:text-blue-600 transition-colors" href="index.html">AI</a>
+      <a class="font-headline font-bold tracking-tight text-slate-500 hover:text-blue-600 transition-colors" href="course-catalog.html">Developer</a>
+      <a class="font-headline font-bold tracking-tight text-slate-500 hover:text-blue-600 transition-colors" href="#">Mobile</a>
+      <a class="font-headline font-bold tracking-tight text-slate-500 hover:text-blue-600 transition-colors" href="#">Design</a>
+      <a class="font-headline font-bold tracking-tight text-slate-500 hover:text-blue-600 transition-colors" href="#">DevOps</a>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-full">
+      <span class="material-symbols-outlined text-outline mr-2">search</span>
+      <input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder-outline w-48" placeholder="Search knowledge..." type="text"/>
+    </div>
+    <button class="text-slate-500 hover:text-blue-600 transition-colors p-2">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <button class="text-slate-500 hover:text-blue-600 transition-colors p-2">
+      <span class="material-symbols-outlined">shopping_cart</span>
+    </button>
+    <img alt="User profile" class="w-10 h-10 rounded-full border-2 border-primary/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOdMnbJr8pTQE0FKyaGm8m3PkSBQXYyn0XnIsQJq2Z_MlEES5uPJxJdeV4AUF63V-5utWv1SNDORETob0uId23XW5--QmJ57ilBPzD4Br6zkYzarZg7D4lS-hHjxFiaNz_insVUbjRFD7jG2w1na1UHGNuovB3mVjGiwbQztrekqkjEhKFoAcHJMhyNbYQd1jpflOPCoLktAkFncEcBDsnV0u2-1t2HrwE4XuWOSGfmA1VtWM1Q_KzWDnE4a09U72mqkDoPEVSSajv"/>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden pt-20 pb-32 px-8 lg:px-24">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+      <div class="z-10">
+        <span class="inline-block py-1 px-3 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-xs font-bold uppercase tracking-widest mb-6">Editorial Learning Experience</span>
+        <h1 class="text-6xl lg:text-7xl font-extrabold text-on-background leading-tight mb-8">
+          Master the <span class="text-primary">Future</span> of Tech
+        </h1>
+        <p class="text-xl text-on-surface-variant leading-relaxed mb-10 max-w-xl">
+          A curated educational environment designed for the modern engineer. Transform technical skillsets through rigorously structured paths and high-fidelity content.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="course-catalog.html" class="signature-gradient text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+            Explore All Paths
+          </a>
+          <button class="bg-surface-container-high text-on-primary-fixed-variant px-8 py-4 rounded-lg font-bold text-lg hover:bg-surface-container-highest transition-all">
+            View Syllabus
+          </button>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -top-20 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-tertiary/5 rounded-full blur-3xl"></div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-4 pt-12">
+            <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+              <span class="material-symbols-outlined text-primary mb-4 block" style="font-variation-settings: 'FILL' 1;">psychology</span>
+              <h3 class="font-bold text-lg">AI &amp; ML</h3>
+              <p class="text-sm text-on-surface-variant">Neural networks to deep learning architectures.</p>
+            </div>
+            <div class="bg-primary text-white p-6 rounded-xl shadow-xl">
+              <span class="material-symbols-outlined mb-4 block">terminal</span>
+              <h3 class="font-bold text-lg">DevOps</h3>
+              <p class="text-sm opacity-80">Infrastructure as code and scalable systems.</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="h-64 rounded-xl overflow-hidden shadow-lg relative group">
+              <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzas401o2cRRM_tBp7Xn3-Ah-JQ5ps9P0XUILiRFHiH6cRk7VN5FZAsD2FuPjGUltQJ-M0iK7H1AP4LhB6edz56Z6j2IGaGlg8uiwuyaIn7HKVMCfvN3hmvIBVHkjAwcJ53JqGkzYvv4KuPlJNkkfIF183rOwBI3yOcqrBOpg_qWw4kfKFaFZxJazsQfCD7E3ZD9vga8wohvWun81co4EYv7WRBkuhgIN-_abzZp20u8Y_ak0wQdpW7P8UYIdupw4rJ0c9R_lIiWW1" alt="Cloud Architectures"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                <span class="text-white font-bold">Cloud Architectures</span>
+              </div>
+            </div>
+            <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+              <span class="material-symbols-outlined text-tertiary mb-4 block">smartphone</span>
+              <h3 class="font-bold text-lg">Mobile</h3>
+              <p class="text-sm text-on-surface-variant">Cross-platform excellence with Swift and Flutter.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Learning Paths -->
+  <section class="bg-surface-container-low py-24 px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+        <div>
+          <h2 class="text-4xl font-extrabold text-on-background mb-4">Featured Learning Paths</h2>
+          <p class="text-on-surface-variant max-w-lg">Rigorous curricula vetted by industry experts to take you from foundation to professional mastery.</p>
+        </div>
+        <a class="text-primary font-bold flex items-center gap-2 group" href="course-catalog.html">
+          Browse all courses
+          <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+        </a>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <a href="course-detail.html" class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-outline-variant/5 block">
+          <div class="h-48 overflow-hidden relative">
+            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVaiIp10oOPEfEa5oLDfJuy8cYoNaMIKFx-vfrMhyOZUOFQrZHBEOQWui07-3FYUq7LklcxNtH9WPAC2ep1CHP1KP71dglELgB-G61WqOAqzgTXvPpj9bE4dbkqA9yqRGDLZ1h3_-ioWrb0XfxqkTHjzXxc_U1t37kudm5b_gUSZFD-oAb7VQUkfmT0NgBK-c7bB3movVUYRVGZWtDyA4qBiQQK5gppwfjPA-ZhUwcLRUcyZfbwa3vGV86RpVlbwcVEJfD2Xl1Alxw" alt="AI Course"/>
+            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">AI &amp; DATA</div>
+          </div>
+          <div class="p-8">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">24 Modules</span>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-xs font-bold">4.9</span>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Claude for Developers: LLM Engineering</h3>
+            <p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Master the art of building production-grade applications with Anthropic's Claude.</p>
+            <div class="pt-6 border-t border-outline-variant/10 flex justify-between items-center">
+              <div class="flex -space-x-2">
+                <img class="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClflO9Lwukp6M9bes3WpoetdrnioIF3CyW6bZ5wrejHgUZZB1yVG7K9otb6oXF8iAFyk3LBoreiViVptoBWOL4uiLzevsuP9v_DVo3E0PKOOuVP3Tr95DhvcHlX7IE4dcBTo8XGO0lxvBpR1uwt876x7JV1Jk9tTBXbc309FxRehwVEdsQCkTz_As3lCctnU4lSZ2IHTbHbmh1zNwJfcyiN0k2n8X7C2JHHlBKD2Llt-DNcgJjpAmY9drqmqiC0C40GWrhPg5nHzYL" alt="Student"/>
+                <img class="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwhFyK0md3ubRQCBDIXavDnnnRvONTJ7w2SLeYHF5kkugusoZsTPph0GQiVhUowUdOSaaRzAFka-BjUe28qfXYqBEs7DoBhY3V9OHDdBlfAfTaS3y9uDWN9IJMmmRyEUfMNTMc8dGFV_JiAnzemTOSIuT7LA_Ezd5as7tI_rbfaTEgWcHyWKx4-JMzR3Ny7cwsKbPQbx53aeCbAHBoZxscZvuPOfQUYoMoBvztblnZCDf1ohPi0jt22QE6b1sF0pIbvdOtdI9oTkUv" alt="Student"/>
+                <div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-white flex items-center justify-center text-[10px] font-bold text-on-surface-variant">+4k</div>
+              </div>
+              <span class="text-primary font-bold text-sm">Enroll Now</span>
+            </div>
+          </div>
+        </a>
+        <!-- Card 2 -->
+        <a href="course-detail.html" class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-outline-variant/5 block">
+          <div class="h-48 overflow-hidden relative">
+            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaS5KtEWrxHKtycDaIAxRqfl2bMARTw3C7n-cFwHLqTEfUjSENcDJkpZstr6zzF2ex3_hcuVgYDk9CBhpCrMzDmPtYSTOMk7RA4kBCpeElmZOay3jyFfbV9pweN7ofiwc1qMCkS6PiO1G720iu3yUVmJzolBTmZEjfeVeX9SMtTCG8h-51GfBOGWO36J2lXtSd7E5QjeBW0WelWRThTZqK3oRiB1CsNJc8JAJI-wYvHzZZNy-IQBFI28RNzKAPDH8O1dzrUclcCxrC" alt="Full Stack"/>
+            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">DEVELOPMENT</div>
+          </div>
+          <div class="p-8">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">32 Modules</span>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-xs font-bold">4.8</span>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Advanced Full-Stack Systems</h3>
+            <p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Deep dive into React, Node.js, and Distributed Databases for enterprise-grade applications.</p>
+            <div class="pt-6 border-t border-outline-variant/10 flex justify-between items-center">
+              <div class="flex -space-x-2">
+                <img class="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMo6zAN7khAK4luAPk3xQXamF5KNRghWu5mC4fQm7uc1koAa4qfVDNED9Wiv6aR3lRfQUm9hecE5r5jyex1tmF27qkE1SzGpCjVunilj_2CZ9cfIFMM1YVUoXpqT5vXSsnX5KdDqpixnGswh5WB8-1J6el6KkDlFet0u0kSrBcjiYGIndCS64xyHgyGOYC31oFBR1S9a76a-xzgkPepG9RQ1X1ef4maMERcfLIOdRVWFR-g2zE9Poq14xOtgKq6hUVLZIhTjK66fgV" alt="Student"/>
+                <div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-white flex items-center justify-center text-[10px] font-bold text-on-surface-variant">+2k</div>
+              </div>
+              <span class="text-primary font-bold text-sm">Enroll Now</span>
+            </div>
+          </div>
+        </a>
+        <!-- Card 3 -->
+        <a href="course-detail.html" class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-outline-variant/5 block">
+          <div class="h-48 overflow-hidden relative">
+            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANao5IrDZtLop12NcIzGz6NjyzzqrGQ1dSFYce_sGzS1yLvyJiT7QP_u7539aAcj1hP2bcf5BcYfN66BHjuHgIziTGQeyV-3B7HXaAxwT5bGGWkG9utD9eNTv2qFtfgAR9DttuJESd1eugt-dP0iAVAuKD1W8KTPLmWVOqTNGDGrVnTqAWnQpuc-j2qz9JPnW9gPc435r3mdJwTvObyOS6TO7NkuXprYIbQeHTJ8TpIpr3ujSlblpyhseyHVEDnKfpYDNajld6ebWT" alt="Kubernetes"/>
+            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary">CLOUD OPS</div>
+          </div>
+          <div class="p-8">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">18 Modules</span>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-xs font-bold">5.0</span>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Kubernetes &amp; Scale</h3>
+            <p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Architect self-healing, auto-scaling infrastructure using Kubernetes and Terraform.</p>
+            <div class="pt-6 border-t border-outline-variant/10 flex justify-between items-center">
+              <div class="flex -space-x-2">
+                <img class="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASpBgATW1e0qp5LZIabPBA4BisQxOCNpa0sD-pP6E-VuXw8Ca_jdEgaGNBumChg2A-7PL8qLqGV-6_HbtaPEHC-XzfTzHIHV6DOwhnkWVVzYDHOZQg5j-x80cJL8rxw-rtJb8i4gL9rVZ65VE_1bnTvGTwLJrqQfcNZb-LaLDBBwXIXoVYSIm122Tv9Y8ZFHpi81XgZIXaqLqGd-8fc_eHOkmoCZ3osMPf-txiL0" alt="Student"/>
+                <div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-white flex items-center justify-center text-[10px] font-bold text-on-surface-variant">+1k</div>
+              </div>
+              <span class="text-primary font-bold text-sm">Enroll Now</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Marquee -->
+  <section class="py-20 bg-white border-y border-outline-variant/10">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex flex-wrap justify-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+        <div class="flex items-center gap-3 font-bold text-xl tracking-tight"><span class="material-symbols-outlined text-3xl">terminal</span> Python</div>
+        <div class="flex items-center gap-3 font-bold text-xl tracking-tight"><span class="material-symbols-outlined text-3xl">javascript</span> TypeScript</div>
+        <div class="flex items-center gap-3 font-bold text-xl tracking-tight"><span class="material-symbols-outlined text-3xl">flutter</span> Flutter</div>
+        <div class="flex items-center gap-3 font-bold text-xl tracking-tight"><span class="material-symbols-outlined text-3xl">database</span> SQL/NoSQL</div>
+        <div class="flex items-center gap-3 font-bold text-xl tracking-tight"><span class="material-symbols-outlined text-3xl">hub</span> Docker</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Focus Mode CTA -->
+  <section class="py-24 px-8">
+    <div class="max-w-5xl mx-auto relative rounded-3xl overflow-hidden signature-gradient p-12 lg:p-20 shadow-2xl">
+      <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-4xl font-extrabold text-white mb-6">Designed for Focus</h2>
+          <p class="text-on-primary-container text-lg mb-8 leading-relaxed">
+            Our unique "Focus Mode" removes all distractions, creating a high-fidelity learning environment that prioritizes deep work and cognitive retention.
+          </p>
+          <a href="course-detail.html" class="bg-white text-primary px-8 py-3 rounded-lg font-bold hover:bg-white/90 transition-colors inline-block">
+            Try Interactive Demo
+          </a>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-inner">
+          <div class="bg-slate-900 rounded-xl overflow-hidden aspect-video relative flex items-center justify-center">
+            <span class="material-symbols-outlined text-6xl text-white/20">play_circle</span>
+            <div class="absolute bottom-4 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden">
+              <div class="w-1/3 h-full bg-tertiary-fixed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute top-0 right-0 w-1/2 h-full opacity-10">
+        <span class="material-symbols-outlined text-[300px] absolute -top-20 -right-20">auto_awesome</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white py-12 border-t border-slate-100">
+  <div class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto">
+    <div class="mb-8 md:mb-0">
+      <span class="text-lg font-black text-blue-900 uppercase tracking-widest font-headline">Modern Campus</span>
+      <p class="text-slate-400 text-[10px] mt-2 tracking-widest">EDITORIAL LEARNING EXPERIENCE</p>
+    </div>
+    <div class="flex gap-8 mb-8 md:mb-0">
+      <a class="text-xs uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors" href="#">Privacy</a>
+      <a class="text-xs uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors" href="#">Terms</a>
+      <a class="text-xs uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors" href="#">Support</a>
+      <a class="text-xs uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors" href="#">Careers</a>
+    </div>
+    <div class="text-slate-400 text-xs uppercase tracking-widest">© 2024 Modern Campus.</div>
+  </div>
+</footer>
+
+<!-- FAB -->
+<button class="fixed bottom-8 right-8 signature-gradient text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center group">
+  <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+  <span class="absolute right-full mr-4 bg-white text-primary text-sm font-bold py-2 px-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Talk to an Advisor</span>
+</button>
+
+</body>
+</html>

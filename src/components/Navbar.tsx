@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, BookOpen, Search, LogOut, User, ShoppingCart } from "lucide-react";
+import { Menu, X, LogOut, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/hooks/useCart";
 import { Badge } from "@/components/ui/badge";
@@ -33,82 +33,107 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b">
-      <div className="container mx-auto px-4 flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-2 font-heading font-bold text-xl">
-          <span className="gradient-primary text-primary-foreground w-9 h-9 rounded-xl flex items-center justify-center text-lg">
-            <BookOpen className="w-5 h-5" />
-          </span>
-          <span className="text-gradient-primary">RyuZuno</span>
-        </Link>
-
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                location.pathname === link.to
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+      <div className="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+        {/* Logo + Nav Links */}
+        <div className="flex items-center gap-8">
+          <Link to="/" className="text-2xl font-extrabold text-[#003d9b] font-headline tracking-tight">
+            RyuZuno
+          </Link>
+          <div className="hidden md:flex gap-6 items-center">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`font-headline font-bold tracking-tight transition-colors ${
+                  location.pathname === link.to
+                    ? "text-[#003d9b] border-b-2 border-[#003d9b] pb-0.5"
+                    : "text-on-surface-variant hover:text-[#003d9b]"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="rounded-xl">
-            <Search className="w-4 h-4" />
-          </Button>
+        {/* Right side */}
+        <div className="hidden md:flex items-center gap-4">
+          {/* Search pill */}
+          <div className="flex items-center bg-surface-container-low px-4 py-2 rounded-full gap-2">
+            <span className="material-symbols-outlined text-outline text-xl leading-none">search</span>
+            <input
+              className="bg-transparent border-none focus:ring-0 focus:outline-none text-sm text-on-surface placeholder-outline w-36"
+              placeholder="Search knowledge..."
+              type="text"
+            />
+          </div>
+
+          {/* Notifications */}
+          <button className="text-on-surface-variant hover:text-[#003d9b] transition-colors p-2 relative">
+            <span className="material-symbols-outlined">notifications</span>
+          </button>
+
+          {/* Cart */}
           {user && (
-            <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon" className="rounded-xl">
-                <ShoppingCart className="w-4 h-4" />
-              </Button>
+            <Link to="/cart" className="relative text-on-surface-variant hover:text-[#003d9b] transition-colors p-2">
+              <span className="material-symbols-outlined">shopping_cart</span>
               {itemCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] gradient-primary border-0 text-primary-foreground">
+                <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 p-0 flex items-center justify-center text-[10px] bg-[#003d9b] border-0 text-white">
                   {itemCount}
                 </Badge>
               )}
             </Link>
           )}
+
           {user ? (
             <>
               <Link to={getDashboardLink()}>
-                <Button variant="outline" className="rounded-xl font-semibold gap-2">
+                <Button
+                  variant="outline"
+                  className="font-semibold gap-2 border-[#003d9b]/20 text-[#003d9b] hover:bg-surface-container-high rounded-lg"
+                >
                   <User className="w-4 h-4" /> Dashboard
                 </Button>
               </Link>
-              <Button variant="ghost" size="icon" className="rounded-xl" onClick={handleLogout}>
+              <button onClick={handleLogout} className="text-on-surface-variant hover:text-[#003d9b] transition-colors p-2">
                 <LogOut className="w-4 h-4" />
-              </Button>
+              </button>
             </>
           ) : (
             <>
               <Link to="/login">
-                <Button variant="outline" className="rounded-xl font-semibold">Masuk</Button>
+                <Button variant="outline" className="font-semibold border-[#003d9b]/20 text-[#003d9b] hover:bg-surface-container-high rounded-lg">
+                  Masuk
+                </Button>
               </Link>
               <Link to="/register">
-                <Button className="rounded-xl font-semibold gradient-primary border-0">Daftar Gratis</Button>
+                <Button className="font-semibold signature-gradient border-0 text-white rounded-lg hover:opacity-90 transition-all shadow-md shadow-[#003d9b]/20">
+                  Daftar Gratis
+                </Button>
               </Link>
             </>
           )}
         </div>
 
-        <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+        {/* Mobile toggle */}
+        <button className="md:hidden p-2 text-on-surface-variant" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <X /> : <Menu />}
         </button>
       </div>
 
+      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t bg-card p-4 space-y-2">
+        <div className="md:hidden bg-white border-t border-outline-variant/10 p-4 space-y-2">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className="block px-4 py-3 rounded-xl text-sm font-semibold hover:bg-muted"
+              className={`block px-4 py-3 rounded-lg text-sm font-headline font-bold transition-colors ${
+                location.pathname === link.to
+                  ? "bg-surface-container-low text-[#003d9b]"
+                  : "text-on-surface-variant hover:bg-surface-container-low"
+              }`}
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
@@ -118,19 +143,19 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link to={getDashboardLink()} className="flex-1" onClick={() => setMobileOpen(false)}>
-                  <Button variant="outline" className="w-full rounded-xl">Dashboard</Button>
+                  <Button variant="outline" className="w-full rounded-lg font-semibold border-[#003d9b]/20 text-[#003d9b]">Dashboard</Button>
                 </Link>
-                <Button variant="ghost" className="rounded-xl" onClick={() => { handleLogout(); setMobileOpen(false); }}>
+                <Button variant="ghost" className="rounded-lg" onClick={() => { handleLogout(); setMobileOpen(false); }}>
                   <LogOut className="w-4 h-4" />
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
-                  <Button variant="outline" className="w-full rounded-xl">Masuk</Button>
+                  <Button variant="outline" className="w-full rounded-lg font-semibold border-[#003d9b]/20 text-[#003d9b]">Masuk</Button>
                 </Link>
                 <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full rounded-xl gradient-primary border-0">Daftar</Button>
+                  <Button className="w-full rounded-lg font-semibold signature-gradient border-0 text-white">Daftar</Button>
                 </Link>
               </>
             )}
@@ -142,3 +167,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+

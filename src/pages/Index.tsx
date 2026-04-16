@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
-import { ArrowRight, Sparkles, BookOpen, Users, Award } from "lucide-react";
+import { ArrowRight, Users, BookOpen, Award } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,7 +24,7 @@ const Index = () => {
         .select("*, categories(name)")
         .eq("is_featured", true)
         .eq("status", "published")
-        .limit(4);
+        .limit(3);
       return (data || []).map((c: any) => ({
         ...c,
         category_name: c.categories?.name || "",
@@ -56,77 +55,136 @@ const Index = () => {
     },
   });
 
-  const pathColors = ["from-fun-purple to-fun-blue", "from-fun-green to-fun-blue", "from-fun-pink to-fun-orange"];
-
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-surface">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden py-20 lg:py-28">
-        <div className="absolute inset-0 gradient-fun opacity-5" />
-        <div className="absolute top-20 right-10 w-72 h-72 bg-fun-purple/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-60 h-60 bg-fun-pink/10 rounded-full blur-3xl" />
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-1.5 text-sm font-semibold text-primary">
-              <Sparkles className="w-4 h-4" /> Platform Belajar Paling Seru!
-            </div>
-            <h1 className="font-heading text-4xl md:text-6xl font-bold leading-tight">
-              Belajar Jadi <span className="text-gradient-primary">Lebih Seru</span> dengan{" "}
-              <span className="text-fun-orange">Gamifikasi</span> 🎮
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden pt-20 pb-32 px-8 lg:px-24">
+        {/* Ambient blobs */}
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#003d9b]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 left-0 w-64 h-64 bg-[#693600]/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+          {/* Left — copy */}
+          <div>
+            <span className="inline-block py-1 px-3 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-xs font-bold uppercase tracking-widest mb-6">
+              Editorial Learning Experience
+            </span>
+            <h1 className="text-6xl lg:text-7xl font-extrabold text-on-background leading-tight mb-8 font-headline">
+              Master the <span className="text-[#003d9b]">Future</span> of Tech
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Kumpulkan badges, naik level, dan bersaing di leaderboard sambil belajar skill baru dari instruktur terbaik!
+            <p className="text-xl text-on-surface-variant leading-relaxed mb-10 max-w-xl">
+              A curated educational environment designed for the modern engineer. Transform technical skillsets through rigorously structured paths and high-fidelity content.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/catalog">
-                <Button size="lg" className="rounded-2xl gradient-primary border-0 text-base font-bold px-8 shadow-lg shadow-primary/25">
-                  Mulai Belajar <ArrowRight className="w-5 h-5" />
-                </Button>
+            <div className="flex flex-wrap gap-4 mb-12">
+              <Link to="/catalog" className="signature-gradient text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                Explore All Paths
               </Link>
               <Link to="/learning-paths">
-                <Button size="lg" variant="outline" className="rounded-2xl text-base font-bold px-8">
-                  Lihat Learning Paths
+                <Button variant="outline" className="px-8 py-4 rounded-lg font-bold text-lg border-outline-variant/30 text-on-primary-fixed-variant hover:bg-surface-container-high transition-all">
+                  View Learning Paths
                 </Button>
               </Link>
             </div>
-            <div className="flex items-center justify-center gap-8 pt-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-fun-blue" /><strong>50K+</strong> Students</span>
-              <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-fun-green" /><strong>200+</strong> Courses</span>
-              <span className="flex items-center gap-1.5"><Award className="w-4 h-4 text-fun-orange" /><strong>50+</strong> Badges</span>
+
+            {/* Stats */}
+            <div className="flex flex-wrap items-center gap-8 text-sm text-on-surface-variant">
+              <span className="flex items-center gap-2"><Users className="w-4 h-4 text-[#003d9b]" /><strong className="text-on-surface">50K+</strong> Students</span>
+              <span className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-[#003d9b]" /><strong className="text-on-surface">200+</strong> Courses</span>
+              <span className="flex items-center gap-2"><Award className="w-4 h-4 text-tertiary" /><strong className="text-on-surface">50+</strong> Badges</span>
+            </div>
+          </div>
+
+          {/* Right — visual grid */}
+          <div className="relative hidden lg:grid grid-cols-2 gap-4">
+            <div className="space-y-4 pt-12">
+              <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+                <span className="material-symbols-outlined text-[#003d9b] mb-4 block" style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
+                <h3 className="font-bold text-lg font-headline">AI &amp; ML</h3>
+                <p className="text-sm text-on-surface-variant">Neural networks to deep learning architectures.</p>
+              </div>
+              <div className="bg-[#003d9b] text-white p-6 rounded-xl shadow-xl">
+                <span className="material-symbols-outlined mb-4 block">terminal</span>
+                <h3 className="font-bold text-lg font-headline">DevOps</h3>
+                <p className="text-sm opacity-80">Infrastructure as code and scalable systems.</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="h-56 rounded-xl overflow-hidden shadow-lg relative group">
+                <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+                  <span className="material-symbols-outlined text-6xl text-on-surface-variant/20" style={{ fontVariationSettings: "'FILL' 1" }}>cloud</span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                  <span className="text-white font-bold font-headline">Cloud Architectures</span>
+                </div>
+              </div>
+              <div className="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+                <span className="material-symbols-outlined text-tertiary mb-4 block">smartphone</span>
+                <h3 className="font-bold text-lg font-headline">Mobile</h3>
+                <p className="text-sm text-on-surface-variant">Cross-platform excellence with Swift and Flutter.</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-center mb-10">Explore Kategori 🎯</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat) => (
-              <Link key={cat.id} to={`/catalog?category=${cat.name}`}>
-                <Card className="p-5 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-2 border-transparent hover:border-primary/20 cursor-pointer">
-                  <div className="text-3xl mb-2">{cat.icon || "📁"}</div>
-                  <h3 className="font-heading font-bold text-sm">{cat.name}</h3>
-                </Card>
-              </Link>
-            ))}
+      {/* ── Tech Stack Marquee ── */}
+      <section className="py-16 bg-white border-y border-outline-variant/10">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="flex flex-wrap justify-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+            <div className="flex items-center gap-3 font-bold text-xl tracking-tight font-headline">
+              <span className="material-symbols-outlined text-3xl">terminal</span> Python
+            </div>
+            <div className="flex items-center gap-3 font-bold text-xl tracking-tight font-headline">
+              <span className="material-symbols-outlined text-3xl">javascript</span> TypeScript
+            </div>
+            <div className="flex items-center gap-3 font-bold text-xl tracking-tight font-headline">
+              <span className="material-symbols-outlined text-3xl">flutter_dash</span> Flutter
+            </div>
+            <div className="flex items-center gap-3 font-bold text-xl tracking-tight font-headline">
+              <span className="material-symbols-outlined text-3xl">database</span> SQL/NoSQL
+            </div>
+            <div className="flex items-center gap-3 font-bold text-xl tracking-tight font-headline">
+              <span className="material-symbols-outlined text-3xl">hub</span> Docker
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Courses */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold">Kursus Populer 🔥</h2>
-            <Link to="/catalog">
-              <Button variant="ghost" className="font-semibold">Lihat Semua <ArrowRight className="w-4 h-4" /></Button>
+      {/* ── Categories ── */}
+      {categories.length > 0 && (
+        <section className="py-20 px-8 bg-surface-container-low">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-4xl font-extrabold text-on-background mb-12 font-headline">Browse by Category</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {categories.map((cat) => (
+                <Link key={cat.id} to={`/catalog?category=${cat.name}`}>
+                  <div className="bg-surface-container-lowest rounded-xl p-5 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-outline-variant/5 cursor-pointer group">
+                    <div className="text-3xl mb-3">{cat.icon || "📁"}</div>
+                    <h3 className="font-headline font-bold text-sm text-on-surface group-hover:text-[#003d9b] transition-colors">{cat.name}</h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Featured Courses ── */}
+      <section className="py-24 px-8 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div>
+              <h2 className="text-4xl font-extrabold text-on-background mb-4 font-headline">Featured Learning Paths</h2>
+              <p className="text-on-surface-variant max-w-lg">Rigorous curricula vetted by industry experts to take you from foundation to professional mastery.</p>
+            </div>
+            <Link to="/catalog" className="text-[#003d9b] font-bold flex items-center gap-2 group whitespace-nowrap">
+              Browse all courses
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {courses.map((course: any) => (
               <CourseCard
                 key={course.id}
@@ -140,100 +198,117 @@ const Index = () => {
                 thumbnail_url={course.thumbnail_url}
               />
             ))}
+            {courses.length === 0 && (
+              <div className="col-span-3 text-center py-16 text-on-surface-variant">
+                <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                <p>Belum ada kursus featured.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Learning Paths */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold">Learning Paths 🗺️</h2>
-            <p className="text-muted-foreground mt-2">Ikuti jalur belajar terstruktur untuk mencapai tujuanmu</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {learningPaths.map((path: any, i: number) => (
-              <Link key={path.id} to={`/learning-path/${path.id}`}>
-                <Card className="overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                  <div className={`h-3 bg-gradient-to-r ${pathColors[i % pathColors.length]}`} />
-                  <div className="p-6 space-y-4">
-                    <div className="text-4xl">{path.badges?.icon || "🎯"}</div>
-                    <h3 className="font-heading font-bold text-lg group-hover:text-primary transition-colors">{path.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{path.description}</p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{path.learning_path_courses?.length || 0} kursus</span>
-                      <span>{path.estimated_hours || 0} jam</span>
-                    </div>
-                    {path.badges && (
-                      <div className="bg-muted rounded-xl px-3 py-2 text-xs font-semibold text-center">
-                        🏅 Badge: {path.badges.name}
-                      </div>
-                    )}
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Leaderboard Preview */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-10">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold">Leaderboard 🏆</h2>
-              <p className="text-muted-foreground mt-2">Top learners minggu ini</p>
+      {/* ── Learning Paths ── */}
+      {learningPaths.length > 0 && (
+        <section className="py-24 px-8 bg-surface">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-extrabold text-on-background mb-4 font-headline">Learning Paths</h2>
+              <p className="text-on-surface-variant max-w-lg mx-auto">Ikuti jalur belajar terstruktur untuk mencapai tujuanmu</p>
             </div>
-            <Card className="overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {learningPaths.map((path: any) => (
+                <Link key={path.id} to={`/learning-path/${path.id}`}>
+                  <div className="bg-surface-container-lowest rounded-xl overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 group border border-outline-variant/5">
+                    <div className="h-1 signature-gradient" />
+                    <div className="p-6 space-y-4">
+                      <div className="text-4xl">{path.badges?.icon || "🎯"}</div>
+                      <h3 className="font-headline font-bold text-lg group-hover:text-[#003d9b] transition-colors text-on-surface">{path.title}</h3>
+                      <p className="text-sm text-on-surface-variant line-clamp-2">{path.description}</p>
+                      <div className="flex items-center gap-4 text-xs text-on-surface-variant">
+                        <span>{path.learning_path_courses?.length || 0} kursus</span>
+                        <span>{path.estimated_hours || 0} jam</span>
+                      </div>
+                      {path.badges && (
+                        <div className="bg-surface-container-low rounded-lg px-3 py-2 text-xs font-semibold text-on-surface-variant text-center">
+                          🏅 Badge: {path.badges.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Leaderboard Preview ── */}
+      {leaderboard.length > 0 && (
+        <section className="py-24 px-8 bg-surface-container-low">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-extrabold text-on-background mb-4 font-headline">Leaderboard</h2>
+              <p className="text-on-surface-variant">Top learners minggu ini</p>
+            </div>
+            <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden shadow-sm">
               {leaderboard.map((user: any, i: number) => (
-                <div key={user.id} className={`flex items-center gap-4 p-4 ${i < leaderboard.length - 1 ? "border-b" : ""} ${i === 0 ? "bg-fun-yellow/10" : i === 1 ? "bg-muted/50" : i === 2 ? "bg-fun-orange/5" : ""}`}>
-                  <span className={`font-heading font-bold text-lg w-8 text-center ${i === 0 ? "text-fun-yellow" : i === 1 ? "text-muted-foreground" : i === 2 ? "text-fun-orange" : "text-muted-foreground"}`}>
+                <div
+                  key={user.id}
+                  className={`flex items-center gap-4 px-6 py-4 ${i < leaderboard.length - 1 ? "border-b border-outline-variant/10" : ""} hover:bg-surface-container-low transition-colors`}
+                >
+                  <span className={`font-headline font-bold text-lg w-8 text-center ${i === 0 ? "text-tertiary" : "text-on-surface-variant"}`}>
                     {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
                   </span>
-                  <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+                  <div className="w-10 h-10 rounded-full signature-gradient flex items-center justify-center text-white font-bold text-sm shrink-0">
                     {(user.full_name || "U").charAt(0)}
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-sm">{user.full_name || "User"}</p>
+                    <p className="font-semibold text-sm text-on-surface">{user.full_name || "User"}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-heading font-bold text-primary">{(user.xp_points || 0).toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">points</p>
+                    <p className="font-headline font-bold text-[#003d9b]">{(user.xp_points || 0).toLocaleString()}</p>
+                    <p className="text-[10px] text-on-surface-variant">points</p>
                   </div>
                 </div>
               ))}
-              {leaderboard.length === 0 && (
-                <div className="p-8 text-center text-muted-foreground">Belum ada data leaderboard</div>
-              )}
-            </Card>
-            <div className="text-center mt-6">
+            </div>
+            <div className="text-center mt-8">
               <Link to="/leaderboard">
-                <Button variant="outline" className="rounded-xl font-semibold">
-                  Lihat Leaderboard Lengkap <ArrowRight className="w-4 h-4" />
+                <Button variant="outline" className="rounded-lg font-semibold border-outline-variant/30 text-on-surface">
+                  Lihat Leaderboard Lengkap <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* CTA */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <Card className="gradient-primary p-10 md:p-16 text-center text-primary-foreground rounded-3xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-            <div className="relative space-y-6">
-              <h2 className="font-heading text-3xl md:text-4xl font-bold">Siap Mulai Petualangan Belajar? 🚀</h2>
-              <p className="text-lg opacity-90 max-w-xl mx-auto">Gabung dengan 50,000+ learner dan mulai kumpulkan badges hari ini!</p>
-              <Link to="/register">
-                <Button size="lg" className="bg-background text-foreground hover:bg-background/90 rounded-2xl font-bold text-base px-8">
-                  Daftar Sekarang — Gratis! <Sparkles className="w-5 h-5" />
-                </Button>
+      {/* ── Focus CTA ── */}
+      <section className="py-24 px-8 bg-surface">
+        <div className="max-w-5xl mx-auto relative rounded-3xl overflow-hidden signature-gradient p-12 lg:p-20 shadow-2xl">
+          <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-extrabold text-white mb-6 font-headline">Designed for Focus</h2>
+              <p className="text-on-primary-container text-lg mb-8 leading-relaxed">
+                Bergabung dengan 50,000+ learner dan mulai kumpulkan badges hari ini!
+              </p>
+              <Link to="/register" className="bg-white text-[#003d9b] px-8 py-3 rounded-lg font-bold hover:bg-white/90 transition-colors inline-block">
+                Daftar Sekarang — Gratis!
               </Link>
             </div>
-          </Card>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-inner">
+              <div className="bg-slate-900 rounded-xl overflow-hidden aspect-video relative flex items-center justify-center">
+                <span className="material-symbols-outlined text-6xl text-white/20">play_circle</span>
+                <div className="absolute bottom-4 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden">
+                  <div className="w-1/3 h-full bg-tertiary-fixed" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
+            <span className="material-symbols-outlined text-[300px] absolute -top-20 -right-20 text-white">auto_awesome</span>
+          </div>
         </div>
       </section>
 
