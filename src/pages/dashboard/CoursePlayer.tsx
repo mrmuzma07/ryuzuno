@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ArrowLeft, CheckCircle, Circle, PlayCircle, FileText, ChevronDown } from "lucide-react";
+import { CheckCircle, Circle, PlayCircle, ChevronDown, BookOpen, Menu, X } from "lucide-react";
 import { toast } from "sonner";
-import DashboardLayout from "@/components/DashboardLayout";
 import LessonAttachments from "@/components/lesson/LessonAttachments";
 import LessonQuiz from "@/components/lesson/LessonQuiz";
 import LessonCodingExercise from "@/components/lesson/LessonCodingExercise";
@@ -33,15 +31,28 @@ const toEmbedUrl = (url: string) => {
   return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 };
 
+const navItems = [
+  { to: "/dashboard", label: "Dashboard", icon: "dashboard" },
+  { to: "/dashboard/courses", label: "Kursus Saya", icon: "school" },
+  { to: "/dashboard/paths", label: "Learning Paths", icon: "route" },
+  { to: "/dashboard/badges", label: "Badges", icon: "military_tech" },
+  { to: "/dashboard/leaderboard", label: "Leaderboard", icon: "leaderboard" },
+  { to: "/dashboard/profile", label: "Profile", icon: "person" },
+];
+
 const CoursePlayer = () => {
   const { courseId } = useParams();
   const { user } = useAuth();
+  const location = useLocation();
   const [course, setCourse] = useState<any>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"overview" | "resources">("overview");
 
   useEffect(() => {
     if (!courseId || !user) return;
@@ -138,9 +149,9 @@ const CoursePlayer = () => {
       setActiveLesson({ ...allLessons[currentIndex + 1], completed: completedLessons.has(allLessons[currentIndex + 1].id) });
     }
 
-    const totalLessons = allLessons.length;
+    const totalLessonsCount = allLessons.length;
     const newCompleted = completedLessons.size + 1;
-    const newProgress = Math.round((newCompleted / totalLessons) * 100);
+    const newProgress = Math.round((newCompleted / totalLessonsCount) * 100);
 
     await supabase
       .from("enrollments")
@@ -152,148 +163,368 @@ const CoursePlayer = () => {
   const totalLessons = sections.reduce((sum, s) => sum + s.lessons.length, 0);
   const overallProgress = totalLessons > 0 ? Math.round((completedLessons.size / totalLessons) * 100) : 0;
 
+  // Find active section for the module badge
+  const activeSection = sections.find((s) => s.lessons.some((l) => l.id === activeLesson?.id));
+
   if (loading) {
     return (
-      <DashboardLayout role="student">
-        <div className="animate-pulse space-y-6">
-          <div className="h-10 bg-surface-container-high rounded-lg w-1/3" />
-          <div className="h-2 bg-surface-container-high rounded-full w-full" />
-          <div className="h-[400px] bg-surface-container-high rounded-2xl" />
+      <div className="min-h-screen bg-surface">
+        {/* Header skeleton */}
+        <div className="fixed top-0 w-full z-50 h-16 bg-slate-50/80 backdrop-blur-xl shadow-sm" />
+        <div className="flex min-h-screen pt-16">
+          <aside className="hidden lg:block w-72 bg-surface-container-low/50" />
+          <main className="flex-1 p-8">
+            <div className="max-w-5xl mx-auto animate-pulse space-y-6">
+              <div className="aspect-video bg-surface-container-high rounded-2xl" />
+              <div className="h-8 bg-surface-container-high rounded-lg w-1/3" />
+              <div className="h-40 bg-surface-container-high rounded-2xl" />
+            </div>
+          </main>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   if (!course) {
     return (
-      <DashboardLayout role="student">
-        <div className="text-center py-20">
-          <span className="material-symbols-outlined text-6xl text-outline-variant mb-4">menu_book</span>
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="text-center">
+          <span className="material-symbols-outlined text-6xl text-outline-variant mb-4 block">menu_book</span>
           <h1 className="font-headline text-2xl font-bold text-[#003d9b] mb-2">Kursus tidak ditemukan</h1>
-          <Link to="/dashboard/courses">
-            <Button className="rounded-lg mt-4 bg-[#003d9b] hover:bg-primary-container text-white">Kembali</Button>
+          <Link
+            to="/dashboard/courses"
+            className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-[#003d9b] text-white font-bold rounded-lg hover:bg-primary-container transition-all"
+          >
+            Kembali
           </Link>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout role="student">
-      <div className="space-y-8">
-        {/* Hero Header */}
-        <div className="hero-gradient text-white rounded-2xl px-8 py-8 relative overflow-hidden">
-          {/* Decorative blurs */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute top-4 right-8 w-48 h-48 bg-white rounded-full blur-3xl" />
-            <div className="absolute bottom-[-30px] left-[-10px] w-64 h-64 bg-[#693600] rounded-full blur-3xl" />
+    <div className="min-h-screen bg-surface text-on-surface">
+      {/* ===== Top Header Navigation ===== */}
+      <header className="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,61,155,0.04)]">
+        <nav className="flex justify-between items-center h-16 px-6 lg:px-8 w-full">
+          {/* Left: Logo + Nav Links */}
+          <div className="flex items-center gap-6 lg:gap-8">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
+              <BookOpen className="w-5 h-5 text-[#003d9b]" />
+              <span className="text-xl font-extrabold tracking-tighter text-[#003d9b] font-headline">RyuZuno</span>
+            </Link>
+            <div className="hidden md:flex gap-1 items-center font-headline text-sm tracking-wide">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`px-3 py-1.5 rounded-lg transition-colors ${
+                      isActive
+                        ? "text-[#003d9b] font-bold bg-[#003d9b]/5"
+                        : "text-slate-500 hover:text-[#003d9b] hover:bg-slate-100/50"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="relative z-10">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 mb-4 text-sm text-blue-200">
-              <Link to="/dashboard/courses" className="hover:text-white transition-colors flex items-center gap-1">
-                <ArrowLeft className="w-4 h-4" />
-                Kursus Saya
-              </Link>
-              <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="text-white">{course.title}</span>
-            </nav>
+          {/* Right: Icons + Avatar */}
+          <div className="flex items-center gap-3">
+            <button
+              className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
+              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+            >
+              <span className="material-symbols-outlined text-xl">menu_book</span>
+            </button>
+            <button
+              className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+            <button className="hidden md:flex p-2 text-slate-500 hover:bg-[#003d9b]/5 rounded-lg transition-all">
+              <span className="material-symbols-outlined">notifications</span>
+            </button>
+            <button className="hidden md:flex p-2 text-slate-500 hover:bg-[#003d9b]/5 rounded-lg transition-all">
+              <span className="material-symbols-outlined">settings</span>
+            </button>
+            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold ring-2 ring-[#003d9b]/10">
+              U
+            </div>
+          </div>
+        </nav>
 
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline leading-tight mb-3">
-              {course.title}
-            </h1>
+        {/* Mobile Nav Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-slate-100 shadow-lg">
+            <div className="px-4 py-3 space-y-1">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? "text-[#003d9b] bg-[#003d9b]/5 font-bold"
+                        : "text-slate-500 hover:text-[#003d9b] hover:bg-slate-50"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-lg">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </header>
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-blue-100">
-              <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-base">menu_book</span>
-                <span>{completedLessons.size}/{totalLessons} lessons</span>
+      {/* ===== Main Layout: Sidebar + Content ===== */}
+      <div className="flex min-h-screen pt-16">
+        {/* Left Sidebar: Curriculum Navigator */}
+        <aside
+          className={`fixed lg:sticky top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-surface-container-low/50 overflow-y-auto no-scrollbar z-40 transform transition-transform lg:translate-x-0 ${
+            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {/* Course Info Header */}
+          <div className="px-6 py-5 mb-2">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-xl overflow-hidden bg-white shadow-sm flex items-center justify-center shrink-0">
+                {course.thumbnail_url ? (
+                  <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="material-symbols-outlined text-[#003d9b]">school</span>
+                )}
               </div>
-              <div className="h-4 w-px bg-white/20" />
-              <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-base">trending_up</span>
-                <span>{overallProgress}% selesai</span>
+              <div className="min-w-0">
+                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">In Progress</h3>
+                <p className="font-headline font-bold text-[#003d9b] text-sm leading-tight line-clamp-2">{course.title}</p>
               </div>
             </div>
-
             {/* Progress bar */}
-            <div className="mt-5 h-2 bg-white/20 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-200 rounded-full h-1.5">
               <div
-                className="h-full bg-[#ffb77d] rounded-full transition-all duration-500"
+                className="bg-[#003d9b] h-1.5 rounded-full transition-all duration-500"
                 style={{ width: `${overallProgress}%` }}
               />
             </div>
+            <p className="text-[10px] text-slate-400 mt-2 font-medium uppercase tracking-wider">
+              {overallProgress}% Complete
+            </p>
           </div>
-        </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column - Player & Lesson Content */}
-          <div className="lg:col-span-8 space-y-6">
+          {/* Curriculum Sections */}
+          <nav className="px-4 pb-10">
+            <div className="px-2 py-2 border-t border-slate-200/50">
+              <h4 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 mt-3">Curriculum</h4>
+              <div className="space-y-4">
+                {sections.map((section) => {
+                  const isExpanded = expandedSections.has(section.id);
+
+                  return (
+                    <div key={section.id} className="space-y-1">
+                      {/* Section title */}
+                      <button
+                        onClick={() => toggleSection(section.id)}
+                        className="w-full flex items-center justify-between text-left group"
+                      >
+                        <p className="text-xs font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-[#003d9b] transition-colors">
+                          {section.title}
+                        </p>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
+                            isExpanded ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {/* Lessons list */}
+                      {isExpanded && (
+                        <div className="pl-2 border-l-2 border-[#003d9b]/20 space-y-0.5 mt-2">
+                          {section.lessons.map((lesson) => {
+                            const isActive = activeLesson?.id === lesson.id;
+                            const isCompleted = completedLessons.has(lesson.id);
+
+                            return (
+                              <button
+                                key={lesson.id}
+                                onClick={() => {
+                                  setActiveLesson(lesson);
+                                  setMobileSidebarOpen(false);
+                                }}
+                                className={`w-full flex items-center gap-2 p-2 rounded-lg text-left transition-colors ${
+                                  isActive
+                                    ? "bg-[#003d9b]/5 text-[#003d9b]"
+                                    : "text-slate-500 hover:bg-slate-50"
+                                }`}
+                              >
+                                {isCompleted ? (
+                                  <span className="material-symbols-outlined text-sm text-green-500" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                                ) : isActive ? (
+                                  <span className="material-symbols-outlined text-sm text-[#003d9b]" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+                                ) : (
+                                  <span className="material-symbols-outlined text-sm text-slate-400">radio_button_unchecked</span>
+                                )}
+                                <span className={`text-xs line-clamp-1 flex-1 ${isActive ? "font-semibold" : ""}`}>
+                                  {lesson.title}
+                                </span>
+                                {lesson.duration_minutes && (
+                                  <span className="text-[10px] text-slate-400 shrink-0">{lesson.duration_minutes}m</span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </nav>
+        </aside>
+
+        {/* Mobile sidebar overlay */}
+        {mobileSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+
+        {/* ===== Main Content Area ===== */}
+        <main className="flex-1 overflow-y-auto bg-surface p-4 lg:p-8">
+          <div className="max-w-5xl mx-auto space-y-8">
             {activeLesson ? (
               <>
-                {/* Video / Text Content Area */}
+                {/* Video Player Section */}
                 {activeLesson.video_url ? (
-                  <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-xl">
+                  <section className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-2xl">
                     <iframe
                       src={toEmbedUrl(activeLesson.video_url)}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
-                  </div>
+                  </section>
                 ) : (
-                  <div className="aspect-video bg-surface-container-lowest rounded-2xl border border-outline-variant/15 flex items-center justify-center">
+                  <section className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-2xl flex items-center justify-center">
                     <div className="text-center">
-                      <span className="material-symbols-outlined text-5xl text-outline-variant mb-3 block">description</span>
-                      <p className="text-on-surface-variant font-medium">Materi Teks</p>
+                      <span className="material-symbols-outlined text-6xl text-slate-400 mb-3 block">description</span>
+                      <p className="text-slate-400 font-medium">Materi Teks</p>
                     </div>
-                  </div>
+                  </section>
                 )}
 
-                {/* Lesson Detail Card */}
-                <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/15 space-y-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-xl md:text-2xl font-bold font-headline text-[#003d9b]">
+                {/* Lesson Info Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      {activeSection && (
+                        <span className="px-3 py-1 bg-[#003d9b]/10 text-[#003d9b] text-[10px] font-extrabold uppercase tracking-widest rounded-full">
+                          {activeSection.title}
+                        </span>
+                      )}
+                      {activeLesson.duration_minutes && (
+                        <span className="text-on-surface-variant text-sm">
+                          &bull; {activeLesson.duration_minutes} menit
+                        </span>
+                      )}
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-on-surface leading-tight font-headline">
                       {activeLesson.title}
-                    </h2>
-                    {activeLesson.duration_minutes && (
-                      <span className="text-sm text-on-surface-variant font-medium shrink-0 flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-base">schedule</span>
-                        {activeLesson.duration_minutes} menit
-                      </span>
+                    </h1>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    {!completedLessons.has(activeLesson.id) ? (
+                      <button
+                        onClick={completeLesson}
+                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-[#003d9b] to-primary-container text-white rounded-lg font-bold text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all"
+                      >
+                        <span className="material-symbols-outlined text-lg">check_circle</span>
+                        Tandai Selesai
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2 px-6 py-3 bg-green-50 text-green-700 rounded-lg font-bold text-sm border border-green-200">
+                        <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                        Sudah Selesai
+                      </div>
                     )}
                   </div>
+                </div>
 
-                  {activeLesson.content && (
-                    <div
-                      className="prose prose-slate max-w-none text-on-surface-variant leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: activeLesson.content }}
-                    />
-                  )}
-
-                  {/* Lesson Features */}
-                  <div className="space-y-6 pt-2">
-                    <LessonAttachments lessonId={activeLesson.id} />
-                    <LessonQuiz lessonId={activeLesson.id} />
-                    <LessonCodingExercise lessonId={activeLesson.id} />
-                    <LessonAssignment lessonId={activeLesson.id} />
+                {/* Tabs Content Section */}
+                <section className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
+                  {/* Tab Buttons */}
+                  <div className="flex gap-1 bg-surface-container-low rounded-xl p-1 m-4 mb-0">
+                    <button
+                      onClick={() => setActiveTab("overview")}
+                      className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-colors ${
+                        activeTab === "overview"
+                          ? "bg-white text-[#003d9b] font-bold shadow-sm"
+                          : "text-slate-500 hover:text-[#003d9b]"
+                      }`}
+                    >
+                      Overview
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("resources")}
+                      className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-colors ${
+                        activeTab === "resources"
+                          ? "bg-white text-[#003d9b] font-bold shadow-sm"
+                          : "text-slate-500 hover:text-[#003d9b]"
+                      }`}
+                    >
+                      Resources
+                    </button>
                   </div>
 
-                  {/* Complete / Completed Button */}
-                  {!completedLessons.has(activeLesson.id) ? (
-                    <Button
-                      onClick={completeLesson}
-                      className="rounded-lg gap-2 bg-[#003d9b] hover:bg-primary-container text-white font-bold px-6 py-3 shadow-lg shadow-[#003d9b]/20"
-                    >
-                      <CheckCircle className="w-4 h-4" /> Tandai Selesai
-                    </Button>
-                  ) : (
-                    <div className="flex items-center gap-2 text-green-600 font-bold text-sm bg-green-50 px-4 py-3 rounded-lg">
-                      <CheckCircle className="w-5 h-5" /> Lesson ini sudah selesai
-                    </div>
-                  )}
-                </div>
+                  {/* Tab Content */}
+                  <div className="px-6 lg:px-8 pb-8 pt-6 space-y-6">
+                    {activeTab === "overview" && (
+                      <>
+                        {activeLesson.content && (
+                          <div className="prose prose-slate max-w-none">
+                            <h2 className="text-xl font-bold text-on-surface mb-4 font-headline">Materi Pembelajaran</h2>
+                            <div
+                              className="text-on-surface-variant leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: activeLesson.content }}
+                            />
+                          </div>
+                        )}
+
+                        {!activeLesson.content && (
+                          <div className="text-center py-8">
+                            <span className="material-symbols-outlined text-4xl text-outline-variant mb-2 block">article</span>
+                            <p className="text-on-surface-variant text-sm">Belum ada konten untuk lesson ini.</p>
+                          </div>
+                        )}
+
+                        {/* Lesson interactive features */}
+                        <LessonQuiz lessonId={activeLesson.id} />
+                        <LessonCodingExercise lessonId={activeLesson.id} />
+                        <LessonAssignment lessonId={activeLesson.id} />
+                      </>
+                    )}
+
+                    {activeTab === "resources" && (
+                      <div className="space-y-6">
+                        <h3 className="text-sm font-bold text-on-surface uppercase tracking-wider font-headline">
+                          Lesson Resources
+                        </h3>
+                        <LessonAttachments lessonId={activeLesson.id} />
+                      </div>
+                    )}
+                  </div>
+                </section>
               </>
             ) : (
               <div className="bg-surface-container-lowest p-16 text-center rounded-2xl border border-outline-variant/15">
@@ -303,145 +534,9 @@ const CoursePlayer = () => {
               </div>
             )}
           </div>
-
-          {/* Right Sidebar - Curriculum */}
-          <aside className="lg:col-span-4">
-            <div className="sticky top-28 space-y-4">
-              {/* Sidebar Header */}
-              <div className="bg-surface-container-low flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10">
-                <div className="w-10 h-10 bg-[#003d9b]/10 rounded-full flex items-center justify-center text-[#003d9b]">
-                  <span className="material-symbols-outlined">menu_book</span>
-                </div>
-                <div>
-                  <h5 className="font-headline font-bold text-[#003d9b] text-sm">Kurikulum</h5>
-                  <p className="text-xs text-on-surface-variant">
-                    {sections.length} Modul &bull; {totalLessons} Lessons
-                  </p>
-                </div>
-              </div>
-
-              {/* Sections Accordion */}
-              <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/15 overflow-hidden divide-y divide-outline-variant/10">
-                {sections.length === 0 ? (
-                  <div className="p-6 text-center text-sm text-on-surface-variant">
-                    Belum ada section.
-                  </div>
-                ) : (
-                  sections.map((section) => {
-                    const sectionCompleted = section.lessons.filter((l) => completedLessons.has(l.id)).length;
-                    const isExpanded = expandedSections.has(section.id);
-
-                    return (
-                      <div key={section.id}>
-                        {/* Section Header */}
-                        <button
-                          className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-container-low transition-colors"
-                          onClick={() => toggleSection(section.id)}
-                        >
-                          <div className="flex-1 min-w-0">
-                            <span className="font-headline font-bold text-sm text-[#003d9b] line-clamp-1">
-                              {section.title}
-                            </span>
-                            <span className="text-xs text-on-surface-variant">
-                              {sectionCompleted}/{section.lessons.length} selesai
-                            </span>
-                          </div>
-                          <ChevronDown
-                            className={`w-4 h-4 text-on-surface-variant shrink-0 ml-2 transition-transform duration-300 ${
-                              isExpanded ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-
-                        {/* Lessons List */}
-                        {isExpanded && (
-                          <div className="border-t border-outline-variant/10">
-                            {section.lessons.map((lesson) => {
-                              const isActive = activeLesson?.id === lesson.id;
-                              const isCompleted = completedLessons.has(lesson.id);
-
-                              return (
-                                <button
-                                  key={lesson.id}
-                                  className={`w-full py-3 px-4 flex items-center gap-3 text-left text-sm transition-colors ${
-                                    isActive
-                                      ? "bg-[#003d9b]/5 text-[#003d9b] border-l-2 border-[#003d9b]"
-                                      : "hover:bg-surface-container-low text-on-surface-variant"
-                                  }`}
-                                  onClick={() => setActiveLesson(lesson)}
-                                >
-                                  {/* Status Icon */}
-                                  {isCompleted ? (
-                                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                                  ) : isActive ? (
-                                    <PlayCircle className="w-4 h-4 text-[#003d9b] shrink-0" />
-                                  ) : (
-                                    <Circle className="w-4 h-4 text-outline-variant shrink-0" />
-                                  )}
-
-                                  <span className={`flex-1 line-clamp-1 ${isActive ? "font-semibold" : ""}`}>
-                                    {lesson.title}
-                                  </span>
-
-                                  {lesson.duration_minutes && (
-                                    <span className="text-xs text-on-surface-variant shrink-0">
-                                      {lesson.duration_minutes}m
-                                    </span>
-                                  )}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-
-              {/* Progress Summary Card */}
-              <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/15 p-6 space-y-4">
-                <h4 className="font-headline font-bold text-sm text-[#003d9b]">Progress Kursus</h4>
-                <div className="flex items-center gap-4">
-                  <div className="relative w-16 h-16">
-                    <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
-                      <circle cx="32" cy="32" r="28" fill="none" stroke="#e7e7f2" strokeWidth="6" />
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="28"
-                        fill="none"
-                        stroke="#003d9b"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        strokeDasharray={`${overallProgress * 1.76} 176`}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-sm font-bold text-[#003d9b]">{overallProgress}%</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 space-y-1.5">
-                    <div className="flex justify-between text-xs text-on-surface-variant">
-                      <span>Selesai</span>
-                      <span className="font-bold text-on-surface">{completedLessons.size}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-on-surface-variant">
-                      <span>Tersisa</span>
-                      <span className="font-bold text-on-surface">{totalLessons - completedLessons.size}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-on-surface-variant">
-                      <span>Total</span>
-                      <span className="font-bold text-on-surface">{totalLessons}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
-        </div>
+        </main>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
